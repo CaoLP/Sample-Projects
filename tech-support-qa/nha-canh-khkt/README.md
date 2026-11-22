@@ -5,7 +5,7 @@ Code viết theo file "dự án thi KHKT cho HS cấp 2". Gồm 2 phần:
 | Phần | File | Việc làm |
 |---|---|---|
 | Firmware | `esp32/nha_canh.ino` | Đọc MQ-2, DHT22, DS18B20, PIR, mực nước, âm thanh, quang, dò line, MPU6050; mở `http://<IP>/api` trả JSON |
-| App Android | `android/MainActivity.kt` | Gọi `/api` mỗi 2 giây, hiển thị số liệu, cảnh báo, nhật ký, mở camera điện thoại |
+| App Android | `android/MainActivity.kt` | 1 file, 6 tab: Tổng quan, Không khí (biểu đồ MQ-2/nhiệt độ/độ ẩm), Hoạt động, Nước, Camera + ghi chú, Lịch sử (lưu vào máy). Cảnh báo bằng thông báo khi app đang mở |
 
 ## Chạy firmware
 1. Arduino IDE → board **ESP32S3 Dev Module**; cài thư viện: *DHT sensor library*, *Adafruit Unified Sensor*, *OneWire*, *DallasTemperature*.
@@ -17,6 +17,7 @@ Code viết theo file "dự án thi KHKT cho HS cấp 2". Gồm 2 phần:
 2. Thay nội dung `MainActivity.kt` bằng file trong repo.
 3. `AndroidManifest.xml`: thêm trước thẻ `<application`:
    `<uses-permission android:name="android.permission.INTERNET" />`
+   `<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />`
    và trong thẻ `<application` thêm `android:usesCleartextTraffic="true"` (vì ESP32 dùng http).
 4. Chạy. App mở sẵn **chế độ mô phỏng** để xem giao diện; tắt công tắc, nhập IP ESP32 để dùng dữ liệu thật.
 
@@ -25,4 +26,5 @@ Code viết theo file "dự án thi KHKT cho HS cấp 2". Gồm 2 phần:
 - MQ-2 chỉ báo *tín hiệu* khói/khí dễ cháy (số ADC, không phải ppm CO). Ngưỡng ở đầu `MainActivity.kt` là giá trị tạm, phải chỉnh theo đo thực tế.
 - Cực tính module âm thanh/quang/dò line tuỳ loại (HIGH hay LOW là "có"): app đang hiển thị giá trị thô.
 - Không thay thế thiết bị báo cháy/CO đạt chuẩn. Không thử MQ-2 bằng cách đốt hay xả gas.
-- Chưa có thông báo đẩy (notification) và biểu đồ lịch sử; cảnh báo hiện trên màn hình và trong nhật ký. Code chưa được biên dịch/chạy thử trên máy thật.
+- Thông báo chỉ hoạt động khi app đang mở (chưa có service chạy nền). Còi tại chỗ (GPIO 14, tuỳ chọn) do firmware điều khiển, không cần app.
+- Code chưa được biên dịch/chạy thử trên máy thật; nếu Android Studio báo lỗi import/phiên bản Compose, gửi lại dòng lỗi để chỉnh.

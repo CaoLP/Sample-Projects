@@ -14,7 +14,10 @@ const char* WIFI_PASS = "MAT_KHAU";
 // Chân theo bảng trong tài liệu - kiểm tra lại với board thật trước khi đấu dây.
 const int PIN_MQ2 = 4, PIN_DHT = 5, PIN_DS = 6, PIN_PIR = 7, PIN_WATER = 8,
           PIN_SOUND = 9, PIN_LIGHT = 10, PIN_LINE = 11, PIN_SDA = 12, PIN_SCL = 13;
+const int PIN_BUZZER = 14;      // còi/đèn (tuỳ chọn, nếu có sẵn)
+const int MQ_DELTA = 400;       // phải khớp với app, chỉnh theo đo thực tế
 const uint8_t MPU_ADDR = 0x68;  // MPU6050
+long baseSum = 0; int baseCount = 0, mqBase = 0;
 
 DHT dht(PIN_DHT, DHT22);
 OneWire oneWire(PIN_DS);
@@ -64,6 +67,7 @@ void setup() {
   pinMode(PIN_SOUND, INPUT);
   pinMode(PIN_LIGHT, INPUT);
   pinMode(PIN_LINE, INPUT);
+  pinMode(PIN_BUZZER, OUTPUT);
   Wire.begin(PIN_SDA, PIN_SCL);
   Wire.beginTransmission(MPU_ADDR);  // đánh thức MPU6050
   Wire.write(0x6B);
@@ -92,5 +96,8 @@ void loop() {
     mq2 = readAvg(PIN_MQ2);
     water = readAvg(PIN_WATER);
     mpuDev = mpuDeviation();
+    // Cảnh báo tại chỗ: còi kêu khi MQ-2 vượt giá trị nền (trung bình 10 mẫu đầu) + MQ_DELTA
+    if (baseCount < 10) { baseSum += mq2; if (++baseCount == 10) mqBase = baseSum / 10; }
+    else digitalWrite(PIN_BUZZER, mq2 - mqBase > MQ_DELTA ? HIGH : LOW);
   }
 }
