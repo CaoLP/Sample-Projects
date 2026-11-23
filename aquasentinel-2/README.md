@@ -30,7 +30,7 @@
 ### ③ Hành động trực tiếp (phần "đột phá")
 | Tác động | Cách làm | Đo hiệu quả bằng |
 |---|---|---|
-| Cảnh báo tại chỗ, không cần điện thoại | Hộp cột: đèn xanh/vàng/đỏ, loa giọng nói, bảng LED độ sâu ([flood_beacon.ino](flood_beacon.ino)) | Số phút cảnh báo sớm trước khi ngập |
+| Cảnh báo tại chỗ, không cần điện thoại | Hộp cột: tấm LED 8x32 chạy chữ đổi màu xanh/vàng/đỏ, hiện độ sâu và lời khuyên ([flood_beacon.ino](flood_beacon.ino)) | Số phút cảnh báo sớm trước khi ngập |
 | **Dọn cống TRƯỚC mưa** | Sắp mưa lớn trong 24h và bẫy rác > 60% thì tự tạo lệnh dọn cho tổ dân phố/tình nguyện viên. App tính điểm "Chiến binh xanh" | kg rác chặn được, số lần cống không tắc |
 | **Tách first-flush** | 15–20 phút đầu cơn mưa đầu mùa (bẩn nhất): servo mở van dẫn nước qua bể lắng-lọc (cát, sỏi, than hoạt tính, cây thủy sinh) rồi mới ra kênh | TDS/độ đục trước và sau bể lọc |
 | Cứu trợ chính xác | Nút SOS trên hộp cột gửi vị trí + độ sâu nước thật | Thời gian phản hồi yêu cầu |
@@ -41,23 +41,39 @@
 
 ## 4. Mô hình demo trước giám khảo
 - 1 trạm quan trắc (cũ) + 2 hộp cột (1 ở hẻm hay ngập, 1 ở chợ) + 1 bẫy rác + bể first-flush mô hình bằng hộp nhựa trong.
-- Mô phỏng mưa bằng bình tưới. Đổ lá cây/rác vào lưới để kích hoạt lệnh dọn. Dâng nước trong khay để hộp cột chuyển vàng rồi đỏ và phát loa.
+- Mô phỏng mưa bằng bình tưới. Đổ lá cây/rác vào lưới để kích hoạt lệnh dọn. Dâng nước trong khay để chữ trên hộp cột chuyển vàng rồi đỏ ("NGAP 35cm - KHONG DI QUA").
 
 ## 5. Linh kiện thêm (ước tính)
 | Hạng mục | Linh kiện | Giá tham khảo |
 |---|---|---|
-| Hộp cột (mỗi hộp) | ESP32, LoRa SX1276 923MHz, JSN-SR04T, LED WS2812 12 bóng, DFPlayer Mini + loa 3W, nút nhấn chống nước, pin 18650 x2 + tấm pin mặt trời 6V, hộp IP65 | ~600–800k |
+| Hộp cột (mỗi hộp) | ESP32, LoRa SX1276 923MHz, JSN-SR04T, tấm LED WS2812B 8x32 dẻo (~200k), mạch hạ áp 5V 3A, tụ 1000µF, nút nhấn chống nước, pin 18650 x2 + tấm pin mặt trời 6V, hộp IP65 | ~600–800k |
 | Bẫy rác | Lưới inox, siêu âm hoặc loadcell 20kg + HX711 | ~200k |
 | First-flush | Servo MG996R + van bi nhựa, cảm biến mưa, bể lọc tự chế | ~250k |
 | Trạm cũ bổ sung | Cảm biến pH analog, cảm biến mưa tipping bucket | ~400k |
 
-## 6. Lưu ý kỹ thuật
+## 6. Đấu nối hộp cột (tấm LED chạy chữ)
+Bỏ DFPlayer + loa + dải 12 LED. Tấm LED chỉ cần 3 dây:
+
+| Tấm WS2812B 8x32 | Nối tới |
+|---|---|
+| 5V (dây đỏ) | 5V của mạch hạ áp 5V 3A, **không** lấy từ chân 5V của ESP32 |
+| GND (dây trắng/đen) | GND chung với ESP32 |
+| DIN (dây xanh, đầu có mũi tên vào) | GPIO27 qua điện trở 330Ω |
+
+- Tụ 1000µF 10V cắm ngang 5V–GND ngay đầu tấm LED, chống sụt áp lúc bật.
+- Pin 2×18650 (7.4V) → mạch hạ áp → 5V cho tấm LED và chân 5V/VIN của ESP32.
+- Độ sáng 60/255 tốn khoảng 0.3–0.6A. Để 255 trắng toàn tấm sẽ lên ~15A, không dùng.
+- Nếu tấm chập chờn: dây DIN ngắn dưới 20cm, hoặc thêm IC 74AHCT125 nâng tín hiệu 3.3V lên 5V.
+- Chữ bị ngược/lộn: sửa `NEO_MATRIX_TOP`/`LEFT` trong code (tấm mỗi hãng đi dây khác nhau).
+- Font không có dấu nên chữ viết không dấu. Muốn ghép thêm 1 tấm cho dài hơn: nối DOUT tấm 1 vào DIN tấm 2 và đổi `32` thành `64`.
+
+## 7. Lưu ý kỹ thuật
 - **Tần số LoRa:** Việt Nam dùng băng 920–923 MHz (AS923) cho LoRa. Nên đổi RA-02 433 MHz sang module 915/923 MHz.
 - **Đo lưu lượng:** YF-S201 dễ tắc rác ngoài kênh. Có thể ước lượng lưu lượng từ mực nước + tiết diện kênh, hoặc dùng phao đo vận tốc.
 - **Bảo mật tài liệu:** bản PDF hiện có ghi tên và mật khẩu Wi-Fi thật. Nên xóa trước khi nộp hoặc chia sẻ công khai.
 
 ## Files
-- `flood_beacon.ino`: firmware hộp Cột Báo Ngập (ESP32 + LoRa + siêu âm + LED + loa + SOS)
+- `flood_beacon.ino`: firmware hộp Cột Báo Ngập (ESP32 + LoRa + siêu âm + tấm LED chạy chữ + SOS)
 - `classify.py`: luật AI phân biệt chảy tràn / xả thải và điểm nguy cơ ngập (có self-test: `python3 classify.py`)
 
 > Code mẫu để nhóm phát triển tiếp, chưa test trên phần cứng thật.
