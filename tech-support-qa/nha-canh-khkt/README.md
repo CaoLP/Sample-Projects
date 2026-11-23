@@ -2,6 +2,8 @@
 
 > **Mới: [bản app Flutter hoàn chỉnh](flutter-app/)** (đồ họa động, VI/EN, giao diện tối, thông báo, camera, lịch sử). [Tải APK](https://github.com/CaoLP/Sample-Projects/releases/tag/nhacanh-app-v2.0.0).
 
+> **[Hướng dẫn đấu nối chi tiết + sơ đồ](WIRING.md)**
+
 Code viết theo file "dự án thi KHKT cho HS cấp 2". Gồm 2 phần:
 
 | Phần | File | Việc làm |
