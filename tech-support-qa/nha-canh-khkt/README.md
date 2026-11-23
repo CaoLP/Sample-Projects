@@ -1,5 +1,7 @@
 # NHÀ CANH – bản chạy nhanh (ESP32-S3 + Android)
 
+> **Mới: [bản app Flutter hoàn chỉnh](flutter-app/)** (đồ họa động, VI/EN, giao diện tối, thông báo, camera, lịch sử). [Tải APK](https://github.com/CaoLP/Sample-Projects/releases/tag/nhacanh-app-v2.0.0).
+
 Code viết theo file "dự án thi KHKT cho HS cấp 2". Gồm 2 phần:
 
 | Phần | File | Việc làm |
