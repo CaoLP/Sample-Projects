@@ -74,6 +74,7 @@ Bỏ DFPlayer + loa + dải 12 LED. Tấm LED chỉ cần 3 dây:
 
 ## Files
 - `flood_beacon.ino`: firmware hộp Cột Báo Ngập (ESP32 + LoRa + siêu âm + tấm LED chạy chữ + SOS)
+- [HO_GA_THU_DONG.md](HO_GA_THU_DONG.md): hố ga thụ động (lưới Coanda + ngăn đợt đầu bóng phao + van Tesla), không cần điện
 - `first_flush.ino`: firmware Cửa Xả Thông Minh, hướng dẫn ở [FIRST_FLUSH.md](FIRST_FLUSH.md)
 - `classify.py`: luật AI phân biệt chảy tràn / xả thải và điểm nguy cơ ngập (có self-test: `python3 classify.py`)
 
