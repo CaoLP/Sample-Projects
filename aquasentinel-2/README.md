@@ -32,7 +32,7 @@
 |---|---|---|
 | Cảnh báo tại chỗ, không cần điện thoại | Hộp cột: tấm LED 8x32 chạy chữ đổi màu xanh/vàng/đỏ, hiện độ sâu và lời khuyên ([flood_beacon.ino](flood_beacon.ino)) | Số phút cảnh báo sớm trước khi ngập |
 | **Dọn cống TRƯỚC mưa** | Sắp mưa lớn trong 24h và bẫy rác > 60% thì tự tạo lệnh dọn cho tổ dân phố/tình nguyện viên. App tính điểm "Chiến binh xanh" | kg rác chặn được, số lần cống không tắc |
-| **Tách first-flush** | 15–20 phút đầu cơn mưa đầu mùa (bẩn nhất): servo mở van dẫn nước qua bể lắng-lọc (cát, sỏi, than hoạt tính, cây thủy sinh) rồi mới ra kênh | TDS/độ đục trước và sau bể lọc |
+| **Giữ nước mưa đợt đầu tại cửa xả** | Gắn hộp tại giếng tách dòng của cửa xả ven biển: mưa bắt đầu thì đóng cửa phai ra biển, bơm đợt đầu vào cống bao; nước trong lại thì mở; nước dâng cao thì mở ngay chống ngập ([FIRST_FLUSH.md](FIRST_FLUSH.md)) | Độ đục/TDS nước ra biển khi có và không có hệ thống |
 | Cứu trợ chính xác | Nút SOS trên hộp cột gửi vị trí + độ sâu nước thật | Thời gian phản hồi yêu cầu |
 | Giữ chức năng cũ | Lấy mẫu bằng chứng xả thải, và lấy thêm mẫu first-flush để so sánh | — |
 
@@ -40,7 +40,7 @@
 > "Bản 1.0 giúp *phát hiện* ô nhiễm. Bản 2.0 giúp *ngăn* ô nhiễm và ngập: biết trước khi mưa, báo cho cả người không có điện thoại, và tự hành động dọn rác, lọc nước bẩn đầu mùa trước khi nó ra sông."
 
 ## 4. Mô hình demo trước giám khảo
-- 1 trạm quan trắc (cũ) + 2 hộp cột (1 ở hẻm hay ngập, 1 ở chợ) + 1 bẫy rác + bể first-flush mô hình bằng hộp nhựa trong.
+- 1 trạm quan trắc (cũ) + 2 hộp cột (1 ở hẻm hay ngập, 1 ở chợ) + 1 bẫy rác + mô hình cửa xả + giếng tách dòng bằng hộp mica.
 - Mô phỏng mưa bằng bình tưới. Đổ lá cây/rác vào lưới để kích hoạt lệnh dọn. Dâng nước trong khay để chữ trên hộp cột chuyển vàng rồi đỏ ("NGAP 35cm - KHONG DI QUA").
 
 ## 5. Linh kiện thêm (ước tính)
@@ -48,7 +48,7 @@
 |---|---|---|
 | Hộp cột (mỗi hộp) | ESP32, LoRa SX1276 923MHz, JSN-SR04T, tấm LED WS2812B 8x32 dẻo (~200k), mạch hạ áp 5V 3A, tụ 1000µF, nút nhấn chống nước, pin 18650 x2 + tấm pin mặt trời 6V, hộp IP65 | ~600–800k |
 | Bẫy rác | Lưới inox, siêu âm hoặc loadcell 20kg + HX711 | ~200k |
-| First-flush | Servo MG996R + van bi nhựa, cảm biến mưa, bể lọc tự chế | ~250k |
+| Cửa xả thông minh | ESP32 + LoRa, tipping bucket, độ đục SEN0189, JSN-SR04T, servo + mica, bơm mini | ~950k |
 | Trạm cũ bổ sung | Cảm biến pH analog, cảm biến mưa tipping bucket | ~400k |
 
 ## 6. Đấu nối hộp cột (tấm LED chạy chữ)
@@ -74,6 +74,7 @@ Bỏ DFPlayer + loa + dải 12 LED. Tấm LED chỉ cần 3 dây:
 
 ## Files
 - `flood_beacon.ino`: firmware hộp Cột Báo Ngập (ESP32 + LoRa + siêu âm + tấm LED chạy chữ + SOS)
+- `first_flush.ino`: firmware Cửa Xả Thông Minh, hướng dẫn ở [FIRST_FLUSH.md](FIRST_FLUSH.md)
 - `classify.py`: luật AI phân biệt chảy tràn / xả thải và điểm nguy cơ ngập (có self-test: `python3 classify.py`)
 
 > Code mẫu để nhóm phát triển tiếp, chưa test trên phần cứng thật.
