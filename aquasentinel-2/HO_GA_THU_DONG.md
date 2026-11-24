@@ -3,6 +3,10 @@
 Ý tưởng: thay vì chỉ chặn ở cửa xả cuối cùng, xử lý rác và nước bẩn đợt đầu **ngay tại hố ga/hố ếch** ven đường, bằng các phát minh cơ khí đã được chứng minh, không có bộ phận chuyển động phải cấp điện. Hộp Cửa Xả Thông Minh ([FIRST_FLUSH.md](FIRST_FLUSH.md)) vẫn giữ làm lớp cuối.
 
 ## 3 lớp trong 1 hố ga
+![Bản thiết kế 3D](hoga3d.png)
+
+Mô hình 3D xoay được: tải [hoga3d.html](hoga3d.html) về rồi mở bằng Chrome.
+
 ```
  Nước mưa mặt đường
         │

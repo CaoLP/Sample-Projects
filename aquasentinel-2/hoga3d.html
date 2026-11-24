@@ -1,0 +1,107 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Hố Ga Thụ Động 3D</title>
+<style>
+body{margin:0;background:#eef2f7;font-family:-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+#wrap{display:flex;width:1600px;height:1000px}
+#view{position:relative;width:1150px;height:1000px}
+canvas{display:block}
+#ov{position:absolute;inset:0;pointer-events:none}
+#side{width:450px;padding:28px 26px;box-sizing:border-box;background:#fff;border-left:1px solid #dbe3ee;overflow:hidden}
+h1{margin:0;font-size:25px;color:#0f172a}
+.sub{color:#475569;font-size:14px;margin:6px 0 16px}
+.it{display:flex;gap:10px;margin:0 0 11px;font-size:13.5px;line-height:1.38;color:#1e293b}
+.n{flex:none;width:24px;height:24px;border-radius:50%;background:#0f172a;color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+.it b{color:#0f172a}
+.leg{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:12.5px;color:#334155;margin-top:14px;padding-top:12px;border-top:1px solid #e2e8f0}
+.leg span:before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px;background:var(--c)}
+.note{font-size:12px;color:#64748b;margin-top:12px}
+#title{position:absolute;left:24px;top:18px;font-weight:800;font-size:20px;color:#0f172a}
+#title small{display:block;font-weight:500;font-size:13px;color:#475569}
+</style></head><body>
+<div id="wrap"><div id="view"><div id="title">HỐ GA THỤ ĐỘNG – AquaSentinel AI 2.0<small>Mặt cắt 3D, bỏ thành trước để nhìn bên trong · kéo chuột để xoay</small></div><svg id="ov" width="1150" height="1000"></svg></div>
+<div id="side">
+<h1>Bản thiết kế minh hoạ</h1><div class="sub">Hố ga 60×60×80cm (bản thật) · mô hình demo tỉ lệ 1:3</div>
+<div class="it"><div class="n">1</div><div><b>Lưới thu nước mặt đường</b> (hố ếch). Nước mưa và rác rơi xuống tấm dẫn hướng.</div></div>
+<div class="it"><div class="n">2</div><div><b>Lưới Coanda cong</b>: thanh thép wedge-wire nằm ngang, khe 0,5–1mm, bán kính cong ~30cm. Nước bám mặt cong lọt qua khe, rác trượt xuống mép dưới.</div></div>
+<div class="it"><div class="n">3</div><div><b>Giỏ rác tháo được</b> bằng lưới inox, nhấc lên qua nắp hố ga để dọn.</div></div>
+<div class="it"><div class="n">4</div><div><b>Khay hứng</b> dốc về lỗ Ø50 dẫn xuống ngăn đợt đầu, có gờ tràn cao 4cm ở mép phải.</div></div>
+<div class="it"><div class="n">5</div><div><b>Ngăn đợt đầu</b> (thành mica/composite) chứa nước bẩn nhất đầu cơn mưa. ~2–5mm mưa × diện tích đổ về.</div></div>
+<div class="it"><div class="n">6</div><div><b>Bóng phao Ø70</b> trong lồng dẫn hướng. Ngăn đầy thì bóng nổi bịt lỗ, nước sau tràn qua gờ sang ngăn thoát.</div></div>
+<div class="it"><div class="n">7</div><div><b>Ống xả chậm Ø5</b> ra cống bao về nhà máy XLNT, ngăn tự rỗng sau mưa.</div></div>
+<div class="it"><div class="n">8</div><div><b>Van Tesla</b> (in 3D/composite, không bộ phận động): chiều thuận chảy thẳng, chiều ngược bị các vòng quay đầu cản lại. Ghép thêm van lật ngăn triều.</div></div>
+<div class="it"><div class="n">9</div><div><b>ESP32 + LoRa + siêu âm</b> (tuỳ chọn, chạy pin): đo độ đầy giỏ rác và mực nước, báo dọn/tắc về server.</div></div>
+<div class="leg"><span style="--c:#7c4a1e">Nước bẩn đợt đầu</span><span style="--c:#38bdf8">Nước sạch hơn</span><span style="--c:#f97316">Bóng phao</span><span style="--c:#22c55e">Dòng thuận</span><span style="--c:#ef4444">Dòng ngược (bị cản)</span></div>
+<div class="note">Hình minh hoạ nguyên lý. Biên dạng van Tesla vẽ giản lược; kích thước thật tính theo lưu lượng mưa từng hố ga.</div>
+</div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const W=1150,H=1000,view=document.getElementById('view');
+const R=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});R.setSize(W,H);R.setPixelRatio(1);R.setClearColor(0xeef2f7);view.prepend(R.domElement);
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(32,W/H,1,2000);C.position.set(158,150,228);
+const T=new THREE.Vector3(22,46,0);C.lookAt(T);
+S.add(new THREE.HemisphereLight(0xffffff,0x8899aa,.75));const L=new THREE.DirectionalLight(0xffffff,.75);L.position.set(80,160,120);S.add(L);
+const M=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.8},o));
+const concrete=M(0xa8b0ba),cut=M(0x6b7280),steel=M(0xcbd5e1,{metalness:.7,roughness:.35}),glass=M(0xbfe3f5,{transparent:true,opacity:.18,depthWrite:false}),
+ dirty=M(0x7c4a1e,{transparent:true,opacity:.72}),clean=M(0x38bdf8,{transparent:true,opacity:.55,depthWrite:false}),pvc=M(0x94a3b8,{roughness:.5}),
+ orange=M(0xf97316,{roughness:.4}),dark=M(0x1f2937),green=M(0x16a34a),asphalt=M(0x374151),acryl=M(0xe0f2fe,{transparent:true,opacity:.28,depthWrite:false});
+function box(w,h,d,x,y,z,m){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);S.add(o);return o}
+function cyl(r,len,x,y,z,m,axis){const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,len,28),m);o.position.set(x,y,z);if(axis=='x')o.rotation.z=Math.PI/2;if(axis=='z')o.rotation.x=Math.PI/2;S.add(o);return o}
+// vỏ hố ga (bỏ thành trước, thành phải trong suốt)
+box(60,4,60,0,2,0,concrete);box(60,80,4,0,40,-28,concrete);box(4,80,60,-28,40,0,concrete);box(4,80,60,28,40,0,glass);
+box(4,80,1,-28,40,30,cut);box(60,4,1,0,2,30,cut);
+// mặt đường + lưới thu nước (1)
+box(40,6,30,10,83,-15,asphalt);box(60,1,30,0,80.5,-15,cut);
+for(let z=-26;z<=26;z+=4)box(22,2,1.4,-15,82,z,dark);box(1.5,2.5,56,-26,82,0,dark);box(1.5,2.5,56,-4,82,0,dark);
+// tấm dẫn hướng + lưới Coanda (2)
+box(1,10,52,-25,74,0,steel);
+const cx=6,cy=76.75,rad=30.75,a0=192.7*Math.PI/180,a1=270*Math.PI/180,arc=[];
+for(let i=0;i<=34;i++){const a=a0+(a1-a0)*i/34,x=cx+rad*Math.cos(a),y=cy+rad*Math.sin(a);arc.push([x,y]);const b=box(.5,1.1,52,x,y,0,steel);b.rotation.z=a;}
+for(const z of[-26,0,26]){for(let i=0;i<arc.length-1;i++){const[x1,y1]=arc[i],[x2,y2]=arc[i+1],b=box(Math.hypot(x2-x1,y2-y1)+.2,1.4,1,(x1+x2)/2,(y1+y2)/2-.9,z,cut);b.rotation.z=Math.atan2(y2-y1,x2-x1);}}
+// lớp nước mỏng bám mặt lưới + giọt nước lọt khe
+for(let i=0;i<arc.length-1;i+=1){const[x1,y1]=arc[i],[x2,y2]=arc[i+1],b=box(Math.hypot(x2-x1,y2-y1),.8,50,(x1+x2)/2,(y1+y2)/2+.7,0,clean);b.rotation.z=Math.atan2(y2-y1,x2-x1);}
+for(let i=0;i<40;i++){const k=2+Math.floor(Math.random()*26),[x,y]=arc[k];box(.5,2.2,.5,x+(Math.random()-.5),y-3-Math.random()*(y-44),(Math.random()-.5)*48,clean)}
+// rác trên lưới và trong giỏ
+const leaf=(x,y,z,c)=>{const o=new THREE.Mesh(new THREE.SphereGeometry(2,10,8),M(c));o.scale.set(1.3,.35,.9);o.position.set(x,y,z);o.rotation.set(Math.random(),Math.random(),Math.random());S.add(o)};
+leaf(-14,56.5,-8,0x65a30d);leaf(-4,49.2,10,0xa16207);
+// giỏ rác (3)
+const bx0=8,bx1=26,by0=32,by1=48,bz=20;box(18,1,40,17,by0,0,steel);
+for(let x=bx0;x<=bx1;x+=3){box(.4,16,.4,x,40,-bz,steel);box(.4,16,.4,x,40,bz,steel)}
+for(let z=-bz;z<=bz;z+=4){box(.4,16,.4,bx0,40,z,steel);box(.4,16,.4,bx1,40,z,steel)}
+for(const y of[by0,40,by1]){box(18,.5,.5,17,y,-bz,steel);box(18,.5,.5,17,y,bz,steel);box(.5,.5,40,bx0,y,0,steel);box(.5,.5,40,bx1,y,0,steel)}
+box(.6,.6,42,8,by1+1,0,dark);box(.6,.6,42,26,by1+1,0,dark);
+leaf(14,34.5,-6,0x65a30d);leaf(19,35,8,0xa16207);leaf(21,36,-12,0x4d7c0f);
+const bot=cyl(2.2,10,15,35,4,M(0x60a5fa,{transparent:true,opacity:.8}),'x');bot.rotation.y=.6;
+// khay hứng (4) + gờ tràn
+box(34,1.2,30,-11,37,-11,M(0xcbd5e1,{metalness:.6,roughness:.4,transparent:true,opacity:.45,depthWrite:false}));box(1.2,5,30,6,39.5,-11,steel);cyl(3,1.6,-14,37,0,dark);
+box(33,.6,29,-11,38,-11,clean);
+// ngăn đợt đầu (5)
+box(1,33,52,-2,20,0,acryl);box(24,1,52,-14,36,0,acryl);box(22.5,23,50,-14.5,15.5,0,dirty);
+// bóng phao + lồng (6)
+const ball=new THREE.Mesh(new THREE.SphereGeometry(4.2,32,24),orange);ball.position.set(-14,31.5,0);S.add(ball);
+for(const[dx,dz]of[[5,5],[-5,5],[5,-5],[-5,-5]])box(.4,14,.4,-14+dx,29,dz,steel);
+// ống xả chậm (7)
+cyl(1.2,22,-37,6,12,pvc,'x');
+// ngăn thoát: nước sạch hơn + ống ra + van Tesla (8)
+box(26,7,51,12,7.5,0,clean);
+cyl(4,16,34,10,0,pvc,'x');box(36,13,14,58,10,0,acryl);cyl(4,16,84,10,0,pvc,'x');
+cyl(4.6,1.5,42,10,0,pvc,'x');cyl(4.6,1.5,74,10,0,pvc,'x');
+const tm=M(0x38bdf8,{roughness:.3});
+const tube=(pts,r)=>{const c=new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(p[0],10,p[1])));S.add(new THREE.Mesh(new THREE.TubeGeometry(c,80,r,10,false),tm))};
+tube([[42,0],[47,1.6],[52,-1.6],[57,1.6],[62,-1.6],[67,1.6],[74,0]],.9);
+for(let i=0;i<4;i++){const x=44+6*i,s=i%2?-1:1;tube([[x+1,s*.6],[x+2,s*4],[x+5,s*5.2],[x+7.5,s*4],[x+6.5,s*1.8],[x+4.2,s*1.1]],.7)}
+// mũi tên dòng chảy
+const arrow=(from,to,c)=>{const d=new THREE.Vector3(...to).sub(new THREE.Vector3(...from)),l=d.length();S.add(new THREE.ArrowHelper(d.normalize(),new THREE.Vector3(...from),l,c,3.5,2.4))};
+arrow([-15,100,0],[-15,86,0],0x0ea5e9);arrow([6,52,26],[14,46,26],0x65a30d);arrow([3,42,26],[10,32,26],0x0ea5e9);
+arrow([44,20,0],[72,20,0],0x22c55e);arrow([72,-2,0],[56,-2,0],0xef4444);arrow([90,10,0],[100,10,0],0x0ea5e9);arrow([-48,6,12],[-60,6,12],0x7c4a1e);
+// ESP32 + siêu âm (9)
+box(10,7,4,17,66,-24,M(0xf8fafc));box(7,4.5,.6,17,66,-21.8,green);cyl(1.4,2.2,15,61.5,-23,steel);cyl(1.4,2.2,19,61.5,-23,steel);cyl(.4,10,21.5,74,-24,dark);
+const ctl=new THREE.OrbitControls(C,R.domElement);ctl.target.copy(T);ctl.update();
+const labels=[[1,[-15,84,22]],[2,[-19,58,26]],[3,[26,50,22]],[4,[-4,38,4]],[5,[-14,12,26]],[6,[-14,31.5,4]],[7,[-44,6,12]],[8,[58,17,0]],[9,[17,70,-22]]],
+ txt={7:'→ cống bao',8:'→ cống thoát / biển'};
+const ov=document.getElementById('ov');
+function draw(){R.render(S,C);let s='';for(const[n,p]of labels){const v=new THREE.Vector3(...p).project(C),x=(v.x+1)/2*W,y=(1-v.y)/2*H,[ox,oy]=({1:[-46,-40],2:[-46,-30],3:[50,-40],4:[60,-70],5:[-50,30],6:[-70,10],7:[-40,40],8:[46,-40],9:[46,-40]})[n],lx=x+ox,ly=y+oy;
+ s+=`<line x1="${x}" y1="${y}" x2="${lx}" y2="${ly}" stroke="#0f172a" stroke-width="1.6"/><circle cx="${x}" cy="${y}" r="3.5" fill="#0f172a"/><circle cx="${lx}" cy="${ly}" r="14" fill="#0f172a"/><text x="${lx}" y="${ly+5}" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">${n}</text>`;
+ if(txt[n])s+=`<text x="${lx+(lx<x?-20:20)}" y="${ly+5}" font-size="14" font-weight="700" fill="#334155" text-anchor="${lx<x?'end':'start'}">${txt[n]}</text>`;}
+ ov.innerHTML=s;}
+ctl.addEventListener('change',draw);draw();
+</script></body></html>
