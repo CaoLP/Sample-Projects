@@ -1,0 +1,169 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Mô phỏng Hố Ga Thụ Động</title>
+<style>
+body{margin:0;background:#dfe7f0;font-family:-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+#v{position:relative;width:1280px;height:720px}canvas{display:block}
+#cap{position:absolute;left:18px;top:16px;max-width:600px;background:rgba(15,23,42,.86);color:#fff;border-radius:14px;padding:12px 16px}
+#cap .ph{font-size:12px;letter-spacing:1px;color:#7dd3fc;font-weight:800}#cap .t{font-size:22px;font-weight:800;margin:2px 0 4px}#cap .d{font-size:14.5px;line-height:1.4;color:#e2e8f0}
+#st{position:absolute;left:0;right:0;bottom:0;display:flex;gap:6px;padding:8px 12px;background:rgba(255,255,255,.92);border-top:1px solid #cbd5e1;font-size:13px;color:#0f172a}
+#st div{flex:1;text-align:center;border-right:1px solid #e2e8f0}#st div:last-child{border:0}#st b{display:block;font-size:15px}
+#alert{position:absolute;right:18px;top:16px;background:#dc2626;color:#fff;font-weight:800;border-radius:12px;padding:10px 14px;font-size:14px;display:none;max-width:330px}
+#card{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.82);color:#fff;text-align:center;opacity:0}
+#card h1{font-size:40px;margin:0 0 8px}#card p{font-size:18px;color:#cbd5e1;margin:4px 0}
+#legend{position:absolute;right:18px;bottom:62px;background:rgba(255,255,255,.9);border-radius:10px;padding:6px 10px;font-size:12px;color:#334155}
+#legend span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 8px;vertical-align:-1px;background:var(--c)}
+</style></head><body><div id="v">
+<div id="cap"><div class="ph"></div><div class="t"></div><div class="d"></div></div><div id="alert"></div>
+<div id="legend"><span style="--c:#7c4a1e">Nước bẩn đợt đầu</span><span style="--c:#38bdf8">Nước sạch hơn</span><span style="--c:#ef4444">Triều chảy ngược</span></div>
+<div id="st"></div><div id="card"></div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const W=1280,H=720;
+const R=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});R.setSize(W,H);R.setPixelRatio(1);R.setClearColor(0xdfe7f0);R.localClippingEnabled=true;document.getElementById('v').prepend(R.domElement);
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(32,W/H,1,5000);
+S.add(new THREE.HemisphereLight(0xffffff,0x8899aa,.75));const L=new THREE.DirectionalLight(0xffffff,.7);L.position.set(200,400,300);S.add(L);
+const M=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.85},o));
+const tr=(c,op)=>M(c,{transparent:true,opacity:op,depthWrite:false});
+const concrete=M(0xa8b0ba),cut=M(0x7b8494),steel=M(0xcbd5e1,{metalness:.7,roughness:.35}),dark=M(0x1f2937),asphalt=M(0x3f4652),tile=M(0xd6c7a8),soil=M(0xc8b48a),pvc=tr(0x94a3b8,.4),hdpe=tr(0x334155,.3);
+const BROWN=new THREE.Color(0x7c4a1e),BLUE=new THREE.Color(0x38bdf8),RED=new THREE.Color(0xef4444);
+function box(w,h,d,x,y,z,m,par=S){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);par.add(o);return o}
+const bx=(x0,x1,y0,y1,z0,z1,m,par)=>box(x1-x0,y1-y0,z1-z0,(x0+x1)/2,(y0+y1)/2,(z0+z1)/2,m,par);
+function cyl(r,a0,a1,p,q,m,axis,seg=32){const len=Math.abs(a1-a0),o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,len,seg),m);
+ if(axis=='x'){o.rotation.z=Math.PI/2;o.position.set((a0+a1)/2,p,q)}else if(axis=='z'){o.rotation.x=Math.PI/2;o.position.set(p,q,(a0+a1)/2)}else o.position.set(p,(a0+a1)/2,q);S.add(o);return o}
+// ===== tĩnh =====
+bx(-280,340,-170,-10,-250,-240,soil);
+bx(-280,0,-10,0,-240,60,asphalt);for(let x=-260;x<0;x+=40)bx(x,x+20,.1,.6,-200,60,M(0xf8fafc));
+bx(0,15,0,15,-240,-60,concrete);bx(0,15,12,15,-60,60,concrete);
+bx(150,340,0,15,-240,60,tile);bx(0,150,0,15,-240,-65,tile);bx(0,150,0,15,-65,-25,concrete);
+bx(0,150,-135,-120,-65,50,concrete);bx(0,150,-120,0,-65,-50,concrete);
+bx(0,15,-120,-10,-65,50,concrete);bx(0,15,-10,12,-65,-40,concrete);bx(0,15,-10,12,40,50,concrete);bx(135,150,-120,0,-65,50,concrete);
+for(const[x0,x1,y0,y1]of[[0,150,-135,-120],[0,15,-120,12],[135,150,-120,0]])bx(x0,x1,y0,y1,50,51,cut);
+for(let z=-36;z<=36;z+=8)bx(6,9,-10,12,z-1,z+1,dark);
+for(let y=-100;y<=-25;y+=25){bx(55,57,y,y+2,-50,-38,steel);bx(73,75,y,y+2,-50,-38,steel);bx(55,75,y,y+2,-39,-37,steel)}
+// lưới Coanda
+const cx=85,cy=18.7,rad=73.7,a0=204.6*Math.PI/180,a1=270*Math.PI/180,arc=[];
+bx(15,22,-13,-11,-45,45,steel);
+for(let i=0;i<=40;i++){const a=a0+(a1-a0)*i/40,x=cx+rad*Math.cos(a),y=cy+rad*Math.sin(a);arc.push([x,y]);const b=box(.8,2,90,x,y,0,steel);b.rotation.z=a}
+for(const z of[-45,-15,15,45])for(let i=0;i<arc.length-1;i++){const[x1,y1]=arc[i],[x2,y2]=arc[i+1],b=box(Math.hypot(x2-x1,y2-y1)+.3,3,1.5,(x1+x2)/2,(y1+y2)/2-2,z,cut);b.rotation.z=Math.atan2(y2-y1,x2-x1)}
+const scrMat=tr(0x38bdf8,0);for(let i=0;i<arc.length-1;i++){const[x1,y1]=arc[i],[x2,y2]=arc[i+1],b=box(Math.hypot(x2-x1,y2-y1),1.2,88,(x1+x2)/2,(y1+y2)/2+1.4,0,scrMat);b.rotation.z=Math.atan2(y2-y1,x2-x1)}
+const dripMat=tr(0x38bdf8,0),drips=[];for(let i=0;i<70;i++){const k=3+Math.floor(Math.random()*34),[x,y]=arc[k];drips.push({m:box(.8,3,.8,x,y,(Math.random()-.5)*86,dripMat),x,y0:y-3,o:Math.random()})}
+// khay
+bx(15,86,-72,-70,-45,45,tr(0xcbd5e1,.5));bx(84,86,-70,-62,-45,45,steel);const trayMat=tr(0x38bdf8,0);const trayW=bx(15,84,-70,-69,-44,44,trayMat);
+// ống đứng + bóng
+cyl(10,-70,-108,40,0,pvc,'y');cyl(12,-71,-69,40,0,dark,'y');
+const fillMat=()=>tr(0x7c4a1e,.78);
+const riserMat=fillMat(),riserG=new THREE.CylinderGeometry(9,9,1,24);riserG.translate(0,.5,0);const riserW=new THREE.Mesh(riserG,riserMat);riserW.position.set(40,-108,0);S.add(riserW);
+const ball=new THREE.Mesh(new THREE.SphereGeometry(7.5,32,24),M(0xf97316,{roughness:.4}));ball.position.set(40,-100,0);S.add(ball);
+cyl(8,30,200,-105,0,pvc,'x');const hpMat=fillMat();const hpW=cyl(6.5,30,200,-105,0,hpMat,'x');
+// bể HDPE (nước cắt bằng mặt phẳng)
+cyl(30,-250,50,230,-100,hdpe,'z',48);for(const z of[-250,50])cyl(31,z-1,z+1,230,-100,tr(0x111827,.45),'z',48);
+const stPlane=new THREE.Plane(new THREE.Vector3(0,-1,0),-128);const stMat=M(0x7c4a1e,{transparent:true,opacity:.8,clippingPlanes:[stPlane],side:THREE.DoubleSide});cyl(28,-249,49,230,-100,stMat,'z',48);
+// xả chậm + cống bao
+cyl(2.5,232,300,-127,-200,pvc,'x');cyl(20,-250,50,300,-140,tr(0x64748b,.35),'z');cyl(10,-250,50,300,-152,tr(0x7c4a1e,.6),'z');
+// hố thu + ống ra
+const sumpMat=tr(0x38bdf8,.55),sumpG=new THREE.BoxGeometry(120,1,100);sumpG.translate(0,.5,0);const sump=new THREE.Mesh(sumpG,sumpMat);sump.position.set(75,-120,0);S.add(sump);
+cyl(15,0,-40,-100,0,pvc,'x');
+// van Tesla
+bx(-120,-40,-118,-82,-26,26,tr(0xe2e8f0,.3));
+const tMat=tr(0x93c5fd,.55),tube=(pts,r)=>{const c=new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(p[0],-100,p[1])));S.add(new THREE.Mesh(new THREE.TubeGeometry(c,90,r,10,false),tMat));return c};
+const mainC=tube([[-40,0],[-50,4],[-62,-4],[-74,4],[-86,-4],[-98,4],[-110,-4],[-120,0]],2.4);
+const loops=[];for(let i=0;i<5;i++){const x=-44-12*i,s=i%2?-1:1;loops.push(tube([[x-2,s*1.5],[x-5,s*12],[x-12,s*15],[x-17,s*11],[x-15,s*5],[x-10,s*3]],1.8))}
+cyl(15,-120,-135,-100,0,pvc,'x');
+const flapPivot=new THREE.Group();flapPivot.position.set(-136,-85,0);S.add(flapPivot);bx(-1,1,-30,0,-15,15,dark,flapPivot);
+// cống chính
+cyl(50,-240,60,-185,-110,tr(0x9ca3af,.3),'z',48);const mainPlane=new THREE.Plane(new THREE.Vector3(0,-1,0),-150);const mainMat=M(0x38bdf8,{transparent:true,opacity:.6,depthWrite:false,clippingPlanes:[mainPlane],side:THREE.DoubleSide});cyl(48,-239,59,-185,-110,mainMat,'z',48);
+// nắp gang
+const cover=new THREE.Group();S.add(cover);bx(-35,35,0,4,-35,35,M(0x334155,{metalness:.5}),cover);for(let x=-27;x<=27;x+=9)bx(x,x+1,4,5,-32,32,dark,cover);
+// cảm biến
+bx(100,116,-30,-18,-50,-44,M(0xf8fafc));bx(102,114,-29,-20,-44,-43.5,M(0x16a34a));cyl(2,-32,-36,105,-46,steel,'y');cyl(2,-32,-36,111,-46,steel,'y');cyl(.6,-18,14,113,-47,dark,'y');
+const led=new THREE.Mesh(new THREE.SphereGeometry(1.6,12,10),new THREE.MeshBasicMaterial({color:0x22c55e}));led.position.set(108,-17,-43);S.add(led);
+// giỏ rác (nhóm để nhấc lên)
+const basket=new THREE.Group();S.add(basket);
+(function(x0,x1,y0,y1,z0,z1){for(let x=x0;x<=x1;x+=6){bx(x-.4,x+.4,y0,y1,z0-.4,z0+.4,steel,basket);bx(x-.4,x+.4,y0,y1,z1-.4,z1+.4,steel,basket)}for(let z=z0;z<=z1;z+=6){bx(x0-.4,x0+.4,y0,y1,z-.4,z+.4,steel,basket);bx(x1-.4,x1+.4,y0,y1,z-.4,z+.4,steel,basket)}
+ for(const y of[y0,(y0+y1)/2,y1]){bx(x0,x1,y-.5,y+.5,z0-.5,z0+.5,steel,basket);bx(x0,x1,y-.5,y+.5,z1-.5,z1+.5,steel,basket);bx(x0-.5,x0+.5,y-.5,y+.5,z0,z1,steel,basket);bx(x1-.5,x1+.5,y-.5,y+.5,z0,z1,steel,basket)}bx(x0,x1,y0-1,y0,z0,z1,steel,basket)})(90,130,-98,-60,-38,38);
+bx(90,91.5,-60,-20,-1,1,dark,basket);bx(128.5,130,-60,-20,-1,1,dark,basket);bx(90,130,-21.5,-20,-1,1,dark,basket);
+const hook=bx(109.5,110.5,-20,200,-.5,.5,dark);
+const bag=cyl(22,15,50,265,-10,M(0x111827,{roughness:.6}),'y');
+// rác
+const trash=[];const mk=(k,c)=>{let o;if(k=='leaf'){o=new THREE.Mesh(new THREE.SphereGeometry(4,10,8),M(c));o.scale.set(1.3,.35,.9)}else if(k=='bottle'){o=new THREE.Mesh(new THREE.CylinderGeometry(2.6,2.6,13,14),M(c,{transparent:true,opacity:.85}));o.rotation.z=Math.PI/2}else{o=new THREE.Mesh(new THREE.SphereGeometry(4.5,10,8),M(c));o.scale.set(1.2,.5,1)}S.add(o);return o};
+const kinds=[['leaf',0x65a30d],['bottle',0x60a5fa],['leaf',0xa16207],['bag',0xf1f5f9],['leaf',0x4d7c0f],['bottle',0x22c55e],['leaf',0xa16207],['bag',0xfef3c7],['leaf',0x65a30d],['bottle',0x93c5fd],['leaf',0x4d7c0f],['bag',0xf1f5f9]];
+kinds.forEach(([k,c],i)=>{const z=-30+((i*23)%60),start=i<9?15+i*2.1:46.5+(i-9)*2.2;trash.push({m:mk(k,c),road:[-60-((i*37)%170),1.5,z-20],z,start,local:[97+(i%4)*9,-94+Math.floor(i/4)*5,-24+((i*13)%48)],rot:Math.random()*6})});
+// mưa
+const NR=700,rg=new THREE.BufferGeometry(),rp=new Float32Array(NR*6),rd=[];for(let i=0;i<NR;i++)rd.push([-260+Math.random()*590,Math.random()*260,-220+Math.random()*270,Math.random()]);
+rg.setAttribute('position',new THREE.BufferAttribute(rp,3));const rain=new THREE.LineSegments(rg,new THREE.LineBasicMaterial({color:0x2563eb,transparent:true,opacity:.5}));S.add(rain);
+const roadMat=tr(0x38bdf8,0);bx(-260,0,.7,1.4,-200,50,roadMat);
+// hạt dòng chảy
+const PG=new THREE.SphereGeometry(1.6,8,6);function stream(n,pathFn,color){const arr=[];for(let i=0;i<n;i++){const m=new THREE.Mesh(PG,new THREE.MeshBasicMaterial({color}));S.add(m);arr.push(m)}return{arr,pathFn}}
+const poly=pts=>{const c=new THREE.CurvePath();for(let i=0;i<pts.length-1;i++)c.add(new THREE.LineCurve3(new THREE.Vector3(...pts[i]),new THREE.Vector3(...pts[i+1])));return u=>c.getPointAt(u)};
+const toStore=stream(26,poly([[40,-71,0],[40,-104,0],[200,-105,0],[215,-110,0]]),0x7c4a1e);
+const over=stream(18,poly([[80,-66,30],[87,-64,30],[90,-80,30],[90,-108,20]]),0x38bdf8);
+const outMain=new THREE.CurvePath();[[60,-110,0],[0,-100,0],[-40,-100,0]].reduce((a,b)=>{outMain.add(new THREE.LineCurve3(new THREE.Vector3(...a),new THREE.Vector3(...b)));return b});
+const outS=stream(30,u=>u<.35?outMain.getPointAt(u/.35):u<.85?mainC.getPointAt((u-.35)/.5):new THREE.Vector3(-120-(u-.85)/.15*45,-100-(u-.85)/.15*25,0),0x0ea5e9);
+const slow=stream(10,poly([[232,-127,-200],[300,-127,-200],[300,-148,-200]]),0x7c4a1e);
+const rev=stream(30,u=>u,0xef4444);
+// ===== dòng thời gian =====
+const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),ss=(a,b,t)=>{const x=cl((t-a)/(b-a));return x*x*(3-2*x)},lerp=(a,b,k)=>a+(b-a)*k;
+const PH=[[0,6,'','MÔ PHỎNG VẬN HÀNH','Hố ga thụ động AquaSentinel AI 2.0: lưới Coanda + bể trữ đợt đầu có bóng phao + van Tesla và van lật ngăn triều.'],
+[6,14,'GIAI ĐOẠN 1/7','Trời khô','Rác, lá cây, chai nhựa và bụi bẩn tích tụ trên mặt đường. Bể trữ rỗng, bóng phao nằm ở đáy ống đứng.'],
+[14,34,'GIAI ĐOẠN 2/7','Mưa bắt đầu: giữ nước đợt đầu','Nước đầu cơn mưa cuốn chất bẩn (màu nâu) vào cửa hàm ếch. Lưới Coanda cho nước lọt khe, rác trượt xuống giỏ. Nước bẩn chảy xuống ống đứng, đầy dần bể HDPE D600 dưới vỉa hè.'],
+[34,46,'GIAI ĐOẠN 3/7','Bể đầy: bóng phao tự bịt','Bể trữ đầy 0,85m³, nước dâng lên đẩy bóng phao bịt đế côn. Nước mưa phía sau (đã sạch hơn) tràn qua gờ khay xuống hố thu, qua van Tesla chiều thuận, mở van lật ra cống chính.'],
+[46,54,'GIAI ĐOẠN 4/7','Mưa rất lớn: tràn an toàn','Lưu lượng vượt công suất: nước và rác tràn qua mép lưới vào giỏ rồi xuống hố thu. Hố ga vẫn thoát nước như hố ga thường, không gây ngập.'],
+[54,62,'GIAI ĐOẠN 5/7','Tạnh mưa: xả chậm về nhà máy','Lỗ Ø8 xả chậm nước bẩn trong bể về cống bao → nhà máy xử lý nước thải. Sau khoảng 4,5 giờ bể rỗng, bóng phao rơi xuống, sẵn sàng cho cơn mưa sau.'],
+[62,76,'GIAI ĐOẠN 6/7','Triều cường chảy ngược','Nước biển dâng làm đầy cống chính. Van lật bị ép đóng; phần rò rỉ đi vào van Tesla bị các vòng cong quay đầu, tự triệt tiêu. Nước không trào ngược lên hố ga và mặt đường.'],
+[76,92,'GIAI ĐOẠN 7/7','Bảo trì: mở nắp gang dọn rác','Cảm biến siêu âm báo giỏ rác đầy 75% qua LoRa. Công nhân mở nắp gang, móc nhấc giỏ lên, đổ rác vào bao, lắp giỏ lại và đóng nắp. Không cần xuống hố ga.'],
+[92,99,'','TÓM TẮT','']];
+const CAM=[[0,[330,300,900],[40,-70,-70]],[5,[250,260,820],[40,-70,-70]],[13,[250,260,820],[40,-70,-70]],[16,[240,60,380],[75,-62,0]],[24,[240,60,380],[75,-62,0]],[27,[360,50,330],[215,-95,-60]],[33,[360,50,330],[215,-95,-60]],[36,[240,60,380],[75,-62,0]],[40,[240,60,380],[75,-62,0]],[42,[-30,30,300],[-90,-100,0]],[46,[-30,30,300],[-90,-100,0]],[48,[240,60,380],[75,-62,0]],[53,[240,60,380],[75,-62,0]],[56,[360,50,330],[215,-95,-60]],[61,[360,50,330],[215,-95,-60]],[64,[-20,20,320],[-120,-100,-10]],[75,[-20,20,320],[-120,-100,-10]],[78,[330,220,480],[110,-20,-20]],[91,[330,220,480],[110,-20,-20]],[95,[250,260,820],[40,-70,-70]]];
+function camAt(t){let i=0;while(i<CAM.length-1&&CAM[i+1][0]<=t)i++;const a=CAM[i],b=CAM[Math.min(i+1,CAM.length-1)];const k=b[0]>a[0]?ss(a[0],b[0],t):1;return[a[1].map((v,j)=>lerp(v,b[1][j],k)),a[2].map((v,j)=>lerp(v,b[2][j],k))]}
+function clock(t){const f=m=>{const h=Math.floor(m/60)%24,mm=Math.floor(m%60);return`${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`};
+ if(t<14)return f(13*60+50+(t-6)*1.2);if(t<54)return f(14*60+(t-14)*1.5);if(t<62)return f(15*60+(t-54)*34);if(t<76)return'02:'+String(10+Math.floor((t-62)*3)).padStart(2,'0')+' (đêm)';return'07:'+String(Math.floor((t-76)*2)).padStart(2,'0')+' (sáng)'}
+const cap=document.getElementById('cap'),st=document.getElementById('st'),al=document.getElementById('alert'),card=document.getElementById('card');
+window.render=function(t){
+ const rainI=t<14?0:t<16?ss(14,16,t):t<46?1:t<54?(t<47?lerp(1,2,ss(46,47,t)):2):t<55?2*(1-ss(54,55,t)):0;
+ const dirt=t<34?1:1-ss(34,38,t);
+ const fill=t<16?0:t<34?ss(16,34,t):t<54?1:t<62?lerp(1,0,ss(54,61,t)):0;
+ const riserLv=fill<1?-128+56*fill:-72+2*ss(34,35,t);
+ const sumpH=t<34?3:t<46?lerp(3,14,ss(34,37,t)):t<54?lerp(14,26,ss(46,48,t)):t<62?lerp(26,3,ss(54,58,t)):3;
+ const tide=t<62?0:t<76?ss(63,68,t)*(1-ss(73,76,t)):0;
+ const mainLv=-150+(t>34&&t<56?8:0)+tide*80;
+ const outflow=t>34&&t<56;
+ // rain
+ for(let i=0;i<NR;i++){const[x,y0,z,o]=rd[i],y=(y0-(t*320+o*260)%260+520)%260;const on=i<NR*rainI/2;rp.set([x,on?y:-999,z,x-1.5,on?y+12:-999,z],i*6)}rg.attributes.position.needsUpdate=true;
+ const col=new THREE.Color().copy(BLUE).lerp(BROWN,dirt);
+ roadMat.opacity=.5*cl(rainI);roadMat.color.copy(col);scrMat.opacity=.6*cl(rainI*1.2);scrMat.color.copy(col);dripMat.opacity=.8*cl(rainI);dripMat.color.copy(col);
+ drips.forEach(d=>{const k=(t*1.5+d.o)%1;d.m.position.y=d.y0-k*(d.y0+68);d.m.visible=rainI>0});
+ trayMat.opacity=rainI>0?.6:0;trayMat.color.copy(col);trayW.scale.y=t>34&&rainI>0?6:1;trayW.position.y=-69.5+(t>34&&rainI>0?2.5:0);
+ riserW.scale.y=Math.max(.01,riserLv+108);riserW.visible=riserLv>-108;hpW.visible=fill>0;
+ ball.position.y=cl(riserLv+4,-100,-77.5);
+ stPlane.constant=-128+56*fill;
+ sump.scale.y=sumpH;sumpMat.color.copy(BLUE);mainPlane.constant=mainLv;mainMat.color.copy(BLUE).lerp(new THREE.Color(0x0e7490),tide);
+ flapPivot.rotation.z=outflow&&tide<.1?-.7*cl(rainI+.3):0;
+ const run=(s,on,speed,phase=0)=>s.arr.forEach((m,i)=>{m.visible=on;if(on){m.position.copy(s.pathFn(((t*speed)+i/s.arr.length+phase)%1))}});
+ run(toStore,t>15&&t<34&&rainI>0,.35);run(over,t>35&&rainI>0,.6);run(outS,outflow,rainI>1.5?.5:.3);run(slow,t>16&&t<62,t>54?.5:.15);
+ rev.arr.forEach((m,i)=>{const on=t>64&&t<74;m.visible=on;if(!on)return;const k=((t*.35)+i/30)%1,lp=loops[i%5];let p;
+  if(k<.4){p=mainC.getPointAt(1-k*(.9-(i%5)*.15)/.4)}else{p=lp.getPointAt(cl((k-.4)/.6))}m.position.copy(p);m.material.opacity=1});
+ // trash
+ let inB=0;const bOff=new THREE.Vector3(0,0,0);
+ const lift=t<81?0:t<83?ss(81,83,t)*110:t<88?110:110*(1-ss(88,90,t)),side=t<83?0:t<85?ss(83,85,t)*150:t<87?150:150*(1-ss(87,88.5,t));
+ basket.position.set(side,lift,0);hook.position.set(side,lift+(t>80&&t<91?0:400),0);bag.visible=t>80&&t<92;
+ const cov=t<78?0:t<80?ss(78,80,t):t<90?1:1-ss(90,92,t);cover.position.set(75+150*ss(.5,1,cov),15+60*ss(0,.5,cov)*(1-ss(.5,1,cov))+0,-40);
+ trash.forEach((r,i)=>{const u=t-r.start;let p;
+  if(u<0)p=r.road;else if(u<1.6){const k=u/1.6;p=[lerp(r.road[0],3,k),1.5,lerp(r.road[2],r.z,k)]}
+  else if(u<2.2){const k=(u-1.6)/.6;p=[lerp(3,20,k),lerp(1.5,-10,k),r.z]}
+  else if(u<4.2){const k=(u-2.2)/2,j=Math.min(arc.length-1,Math.floor(k*(arc.length-1)));p=[arc[j][0],arc[j][1]+3,r.z]}
+  else{const k=cl((u-4.2)/.8);inB++;p=[lerp(arc[40][0],r.local[0],k),lerp(-52,r.local[1],k),lerp(r.z,r.local[2],k)];
+   if(t>85.5){const d=cl((t-85.5)/1.2);p=[lerp(r.local[0]+150,265,d),lerp(r.local[1]+110,20,d),lerp(r.local[2],-10,d)];if(t>86.7)p=[-999,-999,-999]}
+   else{p=[p[0]+side,p[1]+lift,p[2]]}}
+  r.m.position.set(...p);r.m.rotation.y=r.rot+(u>0&&u<4.2?u*3:0)});
+ const bPct=t>86.7?0:Math.round(inB/16*100);
+ const warn=(t>76&&t<88)||(t>64&&t<75);led.material.color.set(warn&&Math.floor(t*3)%2?0xef4444:0x22c55e);
+ al.style.display=warn?'block':'none';al.textContent=t<76?'📡 LoRa: CỐNG CHÍNH DÂNG CAO – van lật đã đóng, hố ga an toàn':'📡 LoRa: GIỎ RÁC HỐ GA #12 ĐẦY 75% – cần dọn';
+ const [cp,ct]=camAt(t);C.position.set(...cp);C.lookAt(new THREE.Vector3(...ct));
+ const ph=PH.find(p=>t>=p[0]&&t<p[1])||PH[PH.length-1];
+ cap.style.display=ph[2]?'block':'none';cap.querySelector('.ph').textContent=ph[2];cap.querySelector('.t').textContent=ph[3];cap.querySelector('.d').textContent=ph[4];
+ const ballS=riserLv>=-72?'Đã bịt':fill>0?'Đang nổi':'Ở đáy';
+ st.innerHTML=[['⏱ Giờ',clock(t)],['🌧 Mưa',rainI==0?'Không':rainI>1.5?'150 mm/h':'60 mm/h'],['🛢 Bể trữ',Math.round(fill*100)+'%'],['🟠 Bóng phao',ballS],['🧺 Giỏ rác',bPct+'%'],['🌊 Cống chính',tide>.3?'Triều cường':outflow?'Đang thoát':'Bình thường'],['🚪 Van lật',flapPivot.rotation.z<-.05?'Mở':'Đóng']].map(([a,b])=>`<div>${a}<b>${b}</b></div>`).join('');
+ const intro=t<6?1-ss(4.5,6,t):0,out=ss(92,93.5,t);card.style.opacity=Math.max(intro,out);
+ card.innerHTML=t<10?`<div><h1>HỐ GA THỤ ĐỘNG</h1><p>Mô phỏng vận hành 7 giai đoạn · AquaSentinel AI 2.0</p><p>Mưa đợt đầu · tràn an toàn · xả chậm · triều cường · bảo trì</p></div>`:
+ `<div><h1>Không điện · không mô-tơ · không ngập</h1><p>Giữ 0,85m³ nước bẩn đợt đầu/hố ga · chặn rác bằng lưới Coanda</p><p>Van lật + van Tesla chống triều cường · cảm biến LoRa báo dọn rác</p><p style="font-size:14px;margin-top:14px">Mô phỏng minh hoạ nguyên lý, số liệu sơ bộ cần kiểm chứng</p></div>`;
+ R.render(S,C)};
+window.ready=true;render(0);
+</script></body></html>
