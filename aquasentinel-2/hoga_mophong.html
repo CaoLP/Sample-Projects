@@ -103,7 +103,7 @@ const toStore=stream(26,poly([[40,-71,0],[40,-104,0],[200,-105,0],[215,-110,0]])
 const over=stream(18,poly([[80,-66,30],[87,-64,30],[90,-80,30],[90,-108,20]]),0x38bdf8);
 const outS=stream(30,poly([[90,-112,0],[64,-100,-30],[38,-104,-30],[20,-102,-30],[-20,-100,-30],[-135,-100,-30],[-175,-130,-30]]),0x0ea5e9);
 const slow=stream(10,poly([[232,-127,-200],[300,-127,-200],[300,-148,-200]]),0x7c4a1e);
-const rev=stream(30,poly([[-178,-125,-30],[-135,-102,-30],[-24,-102,-30]]),0xef4444);rev.arr.forEach(m=>{m.material.depthTest=false;m.renderOrder=5});
+const rev=stream(30,poly([[-178,-125,-30],[-135,-102,-30],[-24,-102,-30]]),0xef4444);rev.arr.forEach(m=>{m.material.transparent=true;m.material.depthTest=false;m.renderOrder=5});
 // ===== dòng thời gian =====
 const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),ss=(a,b,t)=>{const x=cl((t-a)/(b-a));return x*x*(3-2*x)},lerp=(a,b,k)=>a+(b-a)*k;
 const PH=[[0,6,'','MÔ PHỎNG VẬN HÀNH','Lớp CHẶN TẬN GỐC: lưới Coanda + bể trữ đợt đầu có bóng phao + khoá chống triều 3 lớp (lưới lọc → van mỏ vịt → cửa lật).'],
