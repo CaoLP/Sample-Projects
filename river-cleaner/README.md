@@ -1,5 +1,19 @@
 # Thuyền vớt rác IoT – động cơ, L298N, mạch công suất
 
+## 0. Dùng linh kiện đang có (ESP32 DevKit, L298N, module MOSFET 2 kênh, DC-DC, 2 chân vịt mini)
+
+| Linh kiện có sẵn | Dùng cho | Ghi chú |
+|---|---|---|
+| L298N | 2 chân vịt trái/phải | Cần đảo chiều (lùi, quay tại chỗ) nên dùng L298N. GPIO25/27 → IN1/IN2, GPIO32/33 → IN3/IN4 |
+| Module MOSFET 2 kênh | Kênh 1: băng tải. Kênh 2: còi/đèn/bơm | MOSFET chỉ bật/tắt + PWM **1 chiều**, chịu dòng lớn hơn L298N, không sụt 2V. PWM1 ← GPIO4, PWM2 ← GPIO13, GND chung |
+| DC-DC | Nuôi ESP32 5V | Đọc chữ trên IC: **LM2596 = hạ áp** → chỉnh ra 5,0V rồi mới cắm ESP32. **XL6009 = tăng áp** → không hạ 12V xuống 5V được, phải mua thêm buck LM2596/MP1584 |
+| ESP32 DevKit | Điều khiển | Có đủ chân 25, 27, 32, 33, 4, 13 |
+| 2 chân vịt mini | Đẩy | Xem điện áp ghi trên motor. Loại 3–6V: cấp 12V qua L298N thì gõ `0` trong code thử để giới hạn PWM (~6V). Đo dòng kẹt: < 2A mới hợp L298N |
+
+**Cần mua thêm:** 1 motor giảm tốc cho băng tải (JGB37-520 12V 30 rpm), 1 diode SS34/1N5822 (gắn ngược 2 đầu motor băng tải, vì module MOSFET thường không có diode xả), lưới inox bọc quanh chân vịt chống nilon quấn.
+
+Chân vịt quấn rác là rủi ro lớn nhất: làm **lồng lưới** quanh chân vịt, và có lệnh lùi ngắn (đảo chiều 1 s) để gỡ rác khi dòng motor tăng bất thường.
+
 ## 1. Chọn động cơ (để dùng được L298N)
 
 L298N chỉ chịu **2 A liên tục / kênh** (đỉnh ~3 A) và sụt **~2 V** (12 V vào → motor nhận ~10 V).
