@@ -26,7 +26,7 @@ table{width:100%;border-collapse:collapse}td{padding:3px 4px;border-bottom:1px s
 <div class="it"><div class="n">9</div><div><b>Đường A – van mỏ vịt EPDM D300</b> trong đầu ống ra: nước đã qua lưới nên không kẹt rác; không bản lề, không rỉ, tự khép khi triều đẩy ngược.</div></div>
 <div class="it"><div class="n">10</div><div><b>Ống đo triều Ø21 + công tắc phao</b>: nối vào ống ra phía cống chính (bình thông nhau). Nước trong ống dâng = triều đã vào cống → báo LoRa.</div></div>
 <div class="it"><div class="n">11</div><div><b>ESP32 + LoRa + siêu âm</b> chạy pin: báo giỏ đầy, báo triều, báo tắc.</div></div>
-<div class="it"><div class="n">12</div><div><b>Hố bùn</b> ở đáy: đáy hố thu dốc về 1 hố nhỏ, cát sỏi lọt lưới gom 1 chỗ, múc nhanh.</div></div>
+<div class="it"><div class="n">12</div><div><b>Hố lắng bùn ở tâm đáy</b>: đáy dốc 5% về tâm, hố Ø400 sâu 300 (~38 L) có xô inox đục lỗ, móc quai nhấc lên là xong. Đáy ống ra cao hơn đáy ≥200 để cát kịp lắng.</div></div>
 <div class="note" style="margin:2px 0 4px"><b>Tách dòng theo lưu lượng:</b> mưa thường chỉ đi đường A (qua lưới Coanda + van mỏ vịt). Mưa cực lớn thêm đường B, nên 2 van không nối tiếp, không làm giảm khả năng thoát nước. Triều lên: cả 2 đường đều một chiều.</div>
 <h2>Tính toán (1 hố ga, cách nhau 30m)</h2>
 <table>
@@ -49,8 +49,9 @@ table{width:100%;border-collapse:collapse}td{padding:3px 4px;border-bottom:1px s
 <tr><td>Đường B: ống D300 + cửa lật composite nhẹ</td><td>3–5</td></tr>
 <tr><td>ESP32 + LoRa + pin + ống đo triều, công tắc phao</td><td>1,3–2</td></tr>
 <tr><td>Nhân công lắp đặt</td><td>5–8</td></tr>
-<tr class="tot"><td>Tổng (bản đầy đủ)</td><td>35–58</td></tr>
-<tr><td>Bản lắp vào hố ga có sẵn (không bể HDPE, không đào)</td><td>22–39</td></tr>
+<tr><td>Hố lắng bùn + xô inox</td><td>0,8–1,5</td></tr>
+<tr class="tot"><td>Tổng (bản đầy đủ)</td><td>36–60</td></tr>
+<tr><td>Bản lắp vào hố ga có sẵn (không bể HDPE, không đào)</td><td>23–40</td></tr>
 </table>
 <div class="leg"><span style="--c:#7c4a1e">Nước đợt đầu (bẩn)</span><span style="--c:#38bdf8">Nước sau (sạch hơn)</span><span style="--c:#22c55e">Dòng thuận</span><span style="--c:#ef4444">Triều dâng ngược (bị chặn)</span></div>
 <div class="note">Giá tham khảo thị trường, cần báo giá thật. Số liệu thuỷ lực là tính sơ bộ, phải đo kiểm chứng trên mô hình và hiện trường. Van mỏ vịt, cửa lật vẽ giản lược.</div>
@@ -120,7 +121,7 @@ cyl(15,15,-150,-55,30,pvc,'x');cyl(15,-150,-162,-55,30,pvc,'x');
 const fp=new THREE.Group();fp.position.set(-163,-40,30);fp.rotation.z=-.12;S.add(fp);const fl=box(2,32,32,0,-15,0,M(0x0f766e,{roughness:.5}));S.remove(fl);fp.add(fl);
 bx(14,16,-71,-69,14,46,M(0x0f766e));
 // ⑫ hố bùn ở đáy
-cyl(12,-134,-120.5,110,0,M(0x57534e),'y');for(let a=0;a<6;a++){const o=box(30,1,3,110+13*Math.cos(a),-121,13*Math.sin(a),M(0x78716c));o.rotation.y=-a;o.rotation.z=.08}
+cyl(20,-150,-120.5,75,0,M(0x57534e),'y');cyl(18,-148,-122,75,0,tr(0xcbd5e1,.85),'y');cyl(15,-147,-140,75,0,M(0xa16207),'y');for(let a=0;a<8;a++){const o=box(34,1,3,75+38*Math.cos(a*Math.PI/4),-120.6,38*Math.sin(a*Math.PI/4),M(0x78716c));o.rotation.y=-a*Math.PI/4}
 // ⑨ van mỏ vịt EPDM trong đầu ống ra
 const rub=M(0x111827,{roughness:.6});cyl(15.5,15,2,-100,-30,rub,'x');
 const db=new THREE.Mesh(new THREE.ConeGeometry(14.5,24,32,1,true),M(0x111827,{roughness:.6,side:THREE.DoubleSide}));db.rotation.z=Math.PI/2;db.scale.set(.3,1,1);db.position.set(-10,-100,-30);S.add(db);
@@ -138,7 +139,7 @@ arrow([-120,30,0],[-30,4,0],0x0ea5e9);arrow([60,-80,48],[60,-98,48],0x0ea5e9);ar
 arrow([95,-70,-30],[-120,-70,-30],0x22c55e);arrow([20,-30,30],[-140,-30,30],0x0ea5e9);arrow([-140,-124,-30],[-26,-124,-30],0xef4444);arrow([250,-127,-200],[290,-127,-200],0x7c4a1e);arrow([75,30,-20],[75,45,-20],0x64748b,6,5);
 const ctl=new THREE.OrbitControls(C,R.domElement);ctl.target.copy(T);ctl.update();
 const ov=document.getElementById('ov'),P=p=>{const v=new THREE.Vector3(...p).project(C);return[(v.x+1)/2*W,(1-v.y)/2*H]};
-const labels=[[1,[3,0,30],[-40,-60]],[2,[30,-22,45],[-60,-30]],[3,[130,-60,38],[60,-30]],[4,[20,-71,45],[-60,10]],[5,[40,-80,8],[-50,40]],[6,[230,-70,40],[50,-40]],[7,[300,-127,-200],[-40,-50]],[8,[-162,-48,30],[-30,-70]],[9,[-12,-100,-21],[-50,60]],[10,[22,-46,-26],[-10,-95]],[11,[108,-24,-44],[50,-50]],[12,[110,-127,0],[60,40]]];
+const labels=[[1,[3,0,30],[-40,-60]],[2,[30,-22,45],[-60,-30]],[3,[130,-60,38],[60,-30]],[4,[20,-71,45],[-60,10]],[5,[40,-80,8],[-50,40]],[6,[230,-70,40],[50,-40]],[7,[300,-127,-200],[-40,-50]],[8,[-162,-48,30],[-30,-70]],[9,[-12,-100,-21],[-50,60]],[10,[22,-46,-26],[-10,-95]],[11,[108,-24,-44],[50,-50]],[12,[75,-135,0],[60,40]]];
 const dims=[[[15,15,60],[135,15,60],'1200'],[[160,-120,55],[160,0,55],'1200'],[[230,-75,-250],[230,-75,50],'HDPE D600 · L=3000 · 0,85m³'],[[-70,-36,30],[-70,-36,30],'Đường B: tràn khi mưa cực lớn'],[[-80,-125,-30],[-80,-125,-30],'Đường A: mưa thường'],[[-185,-50,50],[-185,-50,50],'Cống chính D1000'],[[300,-110,50],[300,-110,50],'Cống bao D400'],[[75,58,-20],[75,58,-20],'Nắp gang 700×700 (nhấc lên)'],[[60,-18,48],[60,-18,48],'R740 · khe 1mm']];
 function draw(){R.render(S,C);let s='';
  for(const[a,b,t]of dims){const[x1,y1]=P(a),[x2,y2]=P(b);if(x1!=x2||y1!=y2)s+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#b45309" stroke-width="1.5" stroke-dasharray="5 3"/><circle cx="${x1}" cy="${y1}" r="2.5" fill="#b45309"/><circle cx="${x2}" cy="${y2}" r="2.5" fill="#b45309"/>`;

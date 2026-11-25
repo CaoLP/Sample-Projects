@@ -8,7 +8,7 @@ Mô hình 3D xoay được: tải [hoga3d_v4.html](hoga3d_v4.html) rồi mở b�
 
 **Lịch sử thay đổi**
 - v3: bỏ van Tesla làm van chính (chỉ cản bớt, vẫn rò ngược, dễ tắc rác), thay bằng lưới Coanda + van mỏ vịt + cửa lật nối tiếp.
-- **v4: tách dòng 2 đường.** v3 đặt van mỏ vịt và cửa lật nối tiếp trên 1 ống, mưa cực lớn có thể bị giảm khả năng thoát. v4 tách thành đường A (mưa thường) và đường B (tràn khi mưa cực lớn), mỗi đường có van một chiều riêng. Thêm module rút lên và hố bùn. Xem mục 1b.
+- **v4: tách dòng 2 đường.** v3 đặt van mỏ vịt và cửa lật nối tiếp trên 1 ống, mưa cực lớn có thể bị giảm khả năng thoát. v4 tách thành đường A (mưa thường) và đường B (tràn khi mưa cực lớn), mỗi đường có van một chiều riêng. Thêm module rút lên và hố lắng bùn ở tâm đáy. Xem mục 1b, 1c.
 
 ## 1. Thiết kế (kích thước thật, mm)
 | # | Bộ phận | Thông số |
@@ -24,7 +24,7 @@ Mô hình 3D xoay được: tải [hoga3d_v4.html](hoga3d_v4.html) rồi mở b�
 | 9 | Đường A: van mỏ vịt cao su EPDM | D300, lắp trong đầu ống ra, mỏ cong có gân cứng chống lật, hướng về cống chính D1000 |
 | 10 | Ống đo triều + công tắc phao | Ống PVC Ø21 nối vào ống ra phía sau van mỏ vịt, dẫn về ngăn van |
 | 11 | Cảm biến (tuỳ chọn) | ESP32 + LoRa + siêu âm + công tắc phao, pin |
-| 12 | Hố bùn | Đáy hố thu dốc về hố Ø240 sâu 140 ở giữa |
+| 12 | Hố lắng bùn ở tâm đáy | Đáy hố thu dốc 5% về tâm; hố Ø400 sâu 300 (~38 L) có xô inox nhấc ra được. Xem mục 1c |
 | — | Module rút lên | Khung lưới Coanda và giỏ rác là 2 module inox/composite có tay cầm, rút qua nắp gang |
 | — | Thân hố ga | BTCT lòng 1200×1000, sâu 1200, thành 150 |
 
@@ -59,6 +59,33 @@ Cả cửa lật và mỏ vịt đều hỏng chủ yếu vì **rác kẹt**, n�
 
 **Tính mới (nói đúng mức):** lưới Coanda cho cửa thu vỉa hè đã có sản phẩm ở nước ngoài; ở VN đã có hố ga ngăn mùi dùng song chắn + cửa lật. Điểm mới là **cách tích hợp** cho hố ga hàm ếch: lưới Coanda tự làm sạch + tách dòng 2 đường + van một chiều trên mỗi đường + giữ nước bẩn đợt đầu + ống đo triều báo sớm cho trụ cảnh báo. Không ghi "chưa có trên thị trường".
 
+## 1c. Hố lắng bùn ở tâm đáy
+
+**Vì sao cần:** lưới Coanda khe 1mm chỉ chặn rác và sỏi lớn. Cát mịn và bùn vẫn lọt qua lưới hoặc theo dòng tràn xuống hố thu. Nếu không có chỗ gom, chúng đọng khắp đáy, lấp dần đáy ống ra và môi van mỏ vịt. Đây là lỗi hay gặp nhất của hố ga hiện nay.
+
+**Thiết kế:**
+- Đáy hố thu láng vữa, **dốc 5% về tâm** để cát tự trượt về 1 chỗ.
+- Hố lắng ở tâm: **Ø400, sâu 300 dưới đáy** (~38 L). Bản đáy BTCT dưới hố lắng dày ≥150.
+- Đặt sẵn **xô inox đục lỗ Ø3** (hoặc xô composite) trong hố lắng, có quai. Khi dọn, móc quai nhấc xô lên qua nắp gang, nước rút qua lỗ, chỉ còn cát. Không phải múc từng gáo.
+- **Đáy ống ra (đường A) cao hơn đáy hố thu ≥200.** Lớp nước 200 này là vùng nước lặng để cát kịp chìm, không bị cuốn vào ống.
+- Có thể thêm 1 vách chắn thấp (cao 100) trước miệng ống ra để chặn cát lăn theo đáy.
+
+**Tính kiểm tra lắng:**
+| | Giá trị |
+|---|---|
+| Diện tích đáy hố thu | ~1,2 m² |
+| Tốc độ dâng bề mặt lúc đỉnh 11 L/s | 0,011 / 1,2 ≈ **9 mm/s** |
+| Tốc độ chìm cát 0,2mm | ~20–25 mm/s → **lắng được** |
+| Tốc độ chìm bụi/bùn 0,05mm | ~2 mm/s → lúc mưa to không lắng, chỉ lắng khi mưa nhỏ hoặc nước đứng |
+
+Nghĩa là hố lắng giữ tốt **cát, sỏi nhỏ**. Bùn mịn phần lớn đi vào **bể trữ đợt đầu** (nước đợt đầu chảy chậm, bùn lắng trong ống HDPE), rồi theo ống xả chậm về cống bao.
+
+**Bể trữ đợt đầu cũng phải dọn:** đặt ống HDPE dốc 1% về phía hố ga, đầu kia có nắp thăm. Mỗi mùa khô súc bằng vòi áp lực từ nắp thăm về hố ga, bùn dồn vào hố lắng rồi nhấc xô.
+
+**Chu kỳ dọn:** chưa có số liệu tuyến đường thực tế. Đề xuất mùa mưa kiểm tra mỗi tháng, mùa khô 3 tháng. Sau 1 mùa mưa đo thể tích cát thực tế để chốt chu kỳ. Có thể gắn thêm cảm biến siêu âm thứ 2 nhìn xuống hố lắng để báo đầy (tuỳ chọn).
+
+**Chi phí thêm:** hố lắng + xô inox ≈ 0,8–1,5 triệu/hố ga (đã cộng vào mục 3).
+
 ## 2. Tính toán sơ bộ (1 hố ga, khoảng cách 30m)
 | Hạng mục | Công thức | Kết quả |
 |---|---|---|
@@ -83,11 +110,12 @@ Cả cửa lật và mỏ vịt đều hỏng chủ yếu vì **rác kẹt**, n�
 | Ống HDPE D600 3m + đào lấp, hoàn trả vỉa hè | 10–15 |
 | Van mỏ vịt cao su EPDM D300 lắp trong ống | 6–12 |
 | Đường B: ống D300 + cửa lật composite nhẹ | 3–5 |
+| Hố lắng bùn (đổ liền bản đáy, hoặc đục đáy hố cũ) + xô inox | 0,8–1,5 |
 | ESP32 + LoRa + pin + ống đo triều, công tắc phao | 1,3–2 |
 | Nhân công lắp đặt | 5–8 |
-| **Tổng (bản đầy đủ)** | **35–58** |
+| **Tổng (bản đầy đủ)** | **36–60** |
 
-- **Bản lắp vào hố ga có sẵn** (module lưới + giỏ, van mỏ vịt, đường B, cảm biến; không bể HDPE, không đào vỉa hè): ~22–39 triệu. Dễ áp dụng thực tế nhất.
+- **Bản lắp vào hố ga có sẵn** (module lưới + giỏ, van mỏ vịt, đường B, hố lắng, cảm biến; không bể HDPE, không đào vỉa hè): ~23–40 triệu. Dễ áp dụng thực tế nhất.
 - Bản tối thiểu chỉ có module lưới Coanda + giỏ rác: ~12–18 triệu.
 - Khoảng giá rộng chủ yếu vì van mỏ vịt EPDM D300 chưa có báo giá.
 - Mô hình demo tỉ lệ 1:5 (mica, in 3D, ống PVC): ~1,5–2 triệu.
