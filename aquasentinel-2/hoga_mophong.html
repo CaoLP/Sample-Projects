@@ -35,7 +35,7 @@ bx(-280,0,-10,0,-240,60,asphalt);for(let x=-260;x<0;x+=40)bx(x,x+20,.1,.6,-200,6
 bx(0,15,0,15,-240,-60,concrete);bx(0,15,12,15,-60,60,concrete);
 bx(150,340,0,15,-240,60,tile);bx(0,150,0,15,-240,-65,tile);bx(0,150,0,15,-65,-25,concrete);
 bx(0,150,-135,-120,-65,50,concrete);bx(0,150,-120,0,-65,-50,concrete);
-bx(0,15,-120,-10,-65,50,concrete);bx(0,15,-10,12,-65,-40,concrete);bx(0,15,-10,12,40,50,concrete);bx(135,150,-120,0,-65,50,concrete);
+bx(0,15,-120,-10,-65,50,tr(0xa8b0ba,.22));bx(0,15,-10,12,-65,-40,concrete);bx(0,15,-10,12,40,50,concrete);bx(135,150,-120,0,-65,50,concrete);
 for(const[x0,x1,y0,y1]of[[0,150,-135,-120],[0,15,-120,12],[135,150,-120,0]])bx(x0,x1,y0,y1,50,51,cut);
 for(let z=-36;z<=36;z+=8)bx(6,9,-10,12,z-1,z+1,dark);
 for(let y=-100;y<=-25;y+=25){bx(55,57,y,y+2,-50,-38,steel);bx(73,75,y,y+2,-50,-38,steel);bx(55,75,y,y+2,-39,-37,steel)}
@@ -60,15 +60,20 @@ const stPlane=new THREE.Plane(new THREE.Vector3(0,-1,0),-128);const stMat=M(0x7c
 // xả chậm + cống bao
 cyl(2.5,232,300,-127,-200,pvc,'x');cyl(20,-250,50,300,-140,tr(0x64748b,.35),'z');cyl(10,-250,50,300,-152,tr(0x7c4a1e,.6),'z');
 // hố thu + ống ra
-const sumpMat=tr(0x38bdf8,.55),sumpG=new THREE.BoxGeometry(120,1,100);sumpG.translate(0,.5,0);const sump=new THREE.Mesh(sumpG,sumpMat);sump.position.set(75,-120,0);S.add(sump);
-cyl(15,0,-40,-100,0,pvc,'x');
-// van Tesla
-bx(-120,-40,-118,-82,-26,26,tr(0xe2e8f0,.3));
-const tMat=tr(0x93c5fd,.55),tube=(pts,r)=>{const c=new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(p[0],-100,p[1])));S.add(new THREE.Mesh(new THREE.TubeGeometry(c,90,r,10,false),tMat));return c};
-const mainC=tube([[-40,0],[-50,4],[-62,-4],[-74,4],[-86,-4],[-98,4],[-110,-4],[-120,0]],2.4);
-const loops=[];for(let i=0;i<5;i++){const x=-44-12*i,s=i%2?-1:1;loops.push(tube([[x-2,s*1.5],[x-5,s*12],[x-12,s*15],[x-17,s*11],[x-15,s*5],[x-10,s*3]],1.8))}
-cyl(15,-120,-135,-100,0,pvc,'x');
-const flapPivot=new THREE.Group();flapPivot.position.set(-136,-85,0);S.add(flapPivot);bx(-1,1,-30,0,-15,15,dark,flapPivot);
+const sumpMat=tr(0x38bdf8,.35),sumpG=new THREE.BoxGeometry(120,1,100);sumpG.translate(0,.5,0);const sump=new THREE.Mesh(sumpG,sumpMat);sump.position.set(75,-120,0);S.add(sump);
+cyl(15,15,-135,-100,-30,pvc,'x');
+// ngăn van: vách + ống ngắn + cửa lật (lớp 3)
+const wallM=tr(0xa8b0ba,.45);bx(48,52,-120,-76,-50,-12,wallM);bx(15,52,-120,-76,-14,-12,wallM);cyl(15,40,62,-100,-30,pvc,'x');
+const flapPivot=new THREE.Group();flapPivot.position.set(39,-84,-30);S.add(flapPivot);bx(-1,1,-32,0,-16,16,M(0x0f766e,{roughness:.5}),flapPivot);
+// van mỏ vịt EPDM (lớp 2)
+const rub=M(0x111827,{roughness:.6});cyl(15.5,15,2,-100,-30,rub,'x');
+const db=new THREE.Mesh(new THREE.ConeGeometry(14.5,24,32,1,true),M(0x111827,{roughness:.6,side:THREE.DoubleSide}));db.rotation.z=Math.PI/2;db.scale.set(.3,1,1);db.position.set(-10,-100,-30);S.add(db);
+// nước triều trong ống ra (từ cống chính tới mỏ vịt)
+const tideMat=tr(0x0e7490,0),tideW=cyl(13.5,-22,-135,-100,-30,tideMat,'x');
+// ống đo triều Ø21 + công tắc phao
+const pt=tr(0x0369a1,.55);cyl(1.4,-86,-78,-60,-30,pt,'y');cyl(1.4,-60,22,-78,-30,pt,'x');cyl(1.4,-78,-50,22,-30,pt,'y');
+bx(18,26,-50,-42,-34,-26,M(0xf8fafc));const fsw=new THREE.Mesh(new THREE.SphereGeometry(2.2,14,10),M(0xf97316,{roughness:.4}));fsw.position.set(22,-74,-30);S.add(fsw);
+const tubeG=new THREE.CylinderGeometry(1.1,1.1,1,10);tubeG.translate(0,.5,0);const tubeW=new THREE.Mesh(tubeG,M(0x0e7490));tubeW.position.set(22,-78,-30);S.add(tubeW);
 // cống chính
 cyl(50,-240,60,-185,-110,tr(0x9ca3af,.3),'z',48);const mainPlane=new THREE.Plane(new THREE.Vector3(0,-1,0),-150);const mainMat=M(0x38bdf8,{transparent:true,opacity:.6,depthWrite:false,clippingPlanes:[mainPlane],side:THREE.DoubleSide});cyl(48,-239,59,-185,-110,mainMat,'z',48);
 // nắp gang
@@ -96,22 +101,21 @@ const PG=new THREE.SphereGeometry(1.6,8,6);function stream(n,pathFn,color){const
 const poly=pts=>{const c=new THREE.CurvePath();for(let i=0;i<pts.length-1;i++)c.add(new THREE.LineCurve3(new THREE.Vector3(...pts[i]),new THREE.Vector3(...pts[i+1])));return u=>c.getPointAt(u)};
 const toStore=stream(26,poly([[40,-71,0],[40,-104,0],[200,-105,0],[215,-110,0]]),0x7c4a1e);
 const over=stream(18,poly([[80,-66,30],[87,-64,30],[90,-80,30],[90,-108,20]]),0x38bdf8);
-const outMain=new THREE.CurvePath();[[60,-110,0],[0,-100,0],[-40,-100,0]].reduce((a,b)=>{outMain.add(new THREE.LineCurve3(new THREE.Vector3(...a),new THREE.Vector3(...b)));return b});
-const outS=stream(30,u=>u<.35?outMain.getPointAt(u/.35):u<.85?mainC.getPointAt((u-.35)/.5):new THREE.Vector3(-120-(u-.85)/.15*45,-100-(u-.85)/.15*25,0),0x0ea5e9);
+const outS=stream(30,poly([[90,-112,0],[64,-100,-30],[38,-104,-30],[20,-102,-30],[-20,-100,-30],[-135,-100,-30],[-175,-130,-30]]),0x0ea5e9);
 const slow=stream(10,poly([[232,-127,-200],[300,-127,-200],[300,-148,-200]]),0x7c4a1e);
-const rev=stream(30,u=>u,0xef4444);
+const rev=stream(30,poly([[-178,-125,-30],[-135,-102,-30],[-24,-102,-30]]),0xef4444);rev.arr.forEach(m=>{m.material.depthTest=false;m.renderOrder=5});
 // ===== dòng thời gian =====
 const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),ss=(a,b,t)=>{const x=cl((t-a)/(b-a));return x*x*(3-2*x)},lerp=(a,b,k)=>a+(b-a)*k;
-const PH=[[0,6,'','MÔ PHỎNG VẬN HÀNH','Hố ga thụ động AquaSentinel AI 2.0: lưới Coanda + bể trữ đợt đầu có bóng phao + van Tesla và van lật ngăn triều.'],
+const PH=[[0,6,'','MÔ PHỎNG VẬN HÀNH','Lớp CHẶN TẬN GỐC: lưới Coanda + bể trữ đợt đầu có bóng phao + khoá chống triều 3 lớp (lưới lọc → van mỏ vịt → cửa lật).'],
 [6,14,'GIAI ĐOẠN 1/7','Trời khô','Rác, lá cây, chai nhựa và bụi bẩn tích tụ trên mặt đường. Bể trữ rỗng, bóng phao nằm ở đáy ống đứng.'],
 [14,34,'GIAI ĐOẠN 2/7','Mưa bắt đầu: giữ nước đợt đầu','Nước đầu cơn mưa cuốn chất bẩn (màu nâu) vào cửa hàm ếch. Lưới Coanda cho nước lọt khe, rác trượt xuống giỏ. Nước bẩn chảy xuống ống đứng, đầy dần bể HDPE D600 dưới vỉa hè.'],
-[34,46,'GIAI ĐOẠN 3/7','Bể đầy: bóng phao tự bịt','Bể trữ đầy 0,85m³, nước dâng lên đẩy bóng phao bịt đế côn. Nước mưa phía sau (đã sạch hơn) tràn qua gờ khay xuống hố thu, qua van Tesla chiều thuận, mở van lật ra cống chính.'],
+[34,46,'GIAI ĐOẠN 3/7','Bể đầy: bóng phao tự bịt','Bể trữ đầy 0,85m³, nước dâng lên đẩy bóng phao bịt đế côn. Nước mưa phía sau (đã sạch hơn) tràn qua gờ khay xuống hố thu, đẩy mở cửa lật và van mỏ vịt (chỉ cần chênh vài cm) ra cống chính.'],
 [46,54,'GIAI ĐOẠN 4/7','Mưa rất lớn: tràn an toàn','Lưu lượng vượt công suất: nước và rác tràn qua mép lưới vào giỏ rồi xuống hố thu. Hố ga vẫn thoát nước như hố ga thường, không gây ngập.'],
 [54,62,'GIAI ĐOẠN 5/7','Tạnh mưa: xả chậm về nhà máy','Lỗ Ø8 xả chậm nước bẩn trong bể về cống bao → nhà máy xử lý nước thải. Sau khoảng 4,5 giờ bể rỗng, bóng phao rơi xuống, sẵn sàng cho cơn mưa sau.'],
-[62,76,'GIAI ĐOẠN 6/7','Triều cường chảy ngược','Nước biển dâng làm đầy cống chính. Van lật bị ép đóng; phần rò rỉ đi vào van Tesla bị các vòng cong quay đầu, tự triệt tiêu. Nước không trào ngược lên hố ga và mặt đường.'],
+[62,76,'GIAI ĐOẠN 6/7','Triều cường chảy ngược','Nước biển dâng đầy cống chính, đẩy ngược vào ống ra. Van mỏ vịt bị ép khép kín (lớp 2); cửa lật đóng sẵn phía sau (lớp 3). Nhờ lưới Coanda lọc rác từ trước nên không có rác kẹt môi van. Nước trong ống đo triều dâng, nâng công tắc phao → LoRa báo trụ cảnh báo gần đó chuyển VÀNG.'],
 [76,92,'GIAI ĐOẠN 7/7','Bảo trì: mở nắp gang dọn rác','Cảm biến siêu âm báo giỏ rác đầy 75% qua LoRa. Công nhân mở nắp gang, móc nhấc giỏ lên, đổ rác vào bao, lắp giỏ lại và đóng nắp. Không cần xuống hố ga.'],
 [92,99,'','TÓM TẮT','']];
-const CAM=[[0,[330,300,900],[40,-70,-70]],[5,[250,260,820],[40,-70,-70]],[13,[250,260,820],[40,-70,-70]],[16,[240,60,380],[75,-62,0]],[24,[240,60,380],[75,-62,0]],[27,[360,50,330],[215,-95,-60]],[33,[360,50,330],[215,-95,-60]],[36,[240,60,380],[75,-62,0]],[40,[240,60,380],[75,-62,0]],[42,[-30,30,300],[-90,-100,0]],[46,[-30,30,300],[-90,-100,0]],[48,[240,60,380],[75,-62,0]],[53,[240,60,380],[75,-62,0]],[56,[360,50,330],[215,-95,-60]],[61,[360,50,330],[215,-95,-60]],[64,[-20,20,320],[-120,-100,-10]],[75,[-20,20,320],[-120,-100,-10]],[78,[330,220,480],[110,-20,-20]],[91,[330,220,480],[110,-20,-20]],[95,[250,260,820],[40,-70,-70]]];
+const CAM=[[0,[330,300,900],[40,-70,-70]],[5,[250,260,820],[40,-70,-70]],[13,[250,260,820],[40,-70,-70]],[16,[240,60,380],[75,-62,0]],[24,[240,60,380],[75,-62,0]],[27,[360,50,330],[215,-95,-60]],[33,[360,50,330],[215,-95,-60]],[36,[240,60,380],[75,-62,0]],[40,[240,60,380],[75,-62,0]],[42,[-150,15,270],[15,-97,-30]],[46,[-150,15,270],[15,-97,-30]],[48,[240,60,380],[75,-62,0]],[53,[240,60,380],[75,-62,0]],[56,[360,50,330],[215,-95,-60]],[61,[360,50,330],[215,-95,-60]],[64,[-175,25,300],[0,-92,-30]],[75,[-175,25,300],[0,-92,-30]],[78,[330,220,480],[110,-20,-20]],[91,[330,220,480],[110,-20,-20]],[95,[250,260,820],[40,-70,-70]]];
 function camAt(t){let i=0;while(i<CAM.length-1&&CAM[i+1][0]<=t)i++;const a=CAM[i],b=CAM[Math.min(i+1,CAM.length-1)];const k=b[0]>a[0]?ss(a[0],b[0],t):1;return[a[1].map((v,j)=>lerp(v,b[1][j],k)),a[2].map((v,j)=>lerp(v,b[2][j],k))]}
 function clock(t){const f=m=>{const h=Math.floor(m/60)%24,mm=Math.floor(m%60);return`${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`};
  if(t<14)return f(13*60+50+(t-6)*1.2);if(t<54)return f(14*60+(t-14)*1.5);if(t<62)return f(15*60+(t-54)*34);if(t<76)return'02:'+String(10+Math.floor((t-62)*3)).padStart(2,'0')+' (đêm)';return'07:'+String(Math.floor((t-76)*2)).padStart(2,'0')+' (sáng)'}
@@ -135,11 +139,11 @@ window.render=function(t){
  ball.position.y=cl(riserLv+4,-100,-77.5);
  stPlane.constant=-128+56*fill;
  sump.scale.y=sumpH;sumpMat.color.copy(BLUE);mainPlane.constant=mainLv;mainMat.color.copy(BLUE).lerp(new THREE.Color(0x0e7490),tide);
- flapPivot.rotation.z=outflow&&tide<.1?-.7*cl(rainI+.3):0;
+ const open=outflow&&tide<.1?cl(rainI+.3):0;flapPivot.rotation.z=-.6*open;db.scale.x=.12+.38*open;
+ tideMat.opacity=.6*tide;tideW.visible=tide>.02;const th=22*tide;tubeW.scale.y=Math.max(.01,th);tubeW.visible=tide>.02;fsw.position.y=-74+th;
  const run=(s,on,speed,phase=0)=>s.arr.forEach((m,i)=>{m.visible=on;if(on){m.position.copy(s.pathFn(((t*speed)+i/s.arr.length+phase)%1))}});
  run(toStore,t>15&&t<34&&rainI>0,.35);run(over,t>35&&rainI>0,.6);run(outS,outflow,rainI>1.5?.5:.3);run(slow,t>16&&t<62,t>54?.5:.15);
- rev.arr.forEach((m,i)=>{const on=t>64&&t<74;m.visible=on;if(!on)return;const k=((t*.35)+i/30)%1,lp=loops[i%5];let p;
-  if(k<.4){p=mainC.getPointAt(1-k*(.9-(i%5)*.15)/.4)}else{p=lp.getPointAt(cl((k-.4)/.6))}m.position.copy(p);m.material.opacity=1});
+ run(rev,t>64&&t<74,.3);
  // trash
  let inB=0;const bOff=new THREE.Vector3(0,0,0);
  const lift=t<81?0:t<83?ss(81,83,t)*110:t<88?110:110*(1-ss(88,90,t)),side=t<83?0:t<85?ss(83,85,t)*150:t<87?150:150*(1-ss(87,88.5,t));
@@ -155,15 +159,15 @@ window.render=function(t){
   r.m.position.set(...p);r.m.rotation.y=r.rot+(u>0&&u<4.2?u*3:0)});
  const bPct=t>86.7?0:Math.round(inB/16*100);
  const warn=(t>76&&t<88)||(t>64&&t<75);led.material.color.set(warn&&Math.floor(t*3)%2?0xef4444:0x22c55e);
- al.style.display=warn?'block':'none';al.textContent=t<76?'📡 LoRa: CỐNG CHÍNH DÂNG CAO – van lật đã đóng, hố ga an toàn':'📡 LoRa: GIỎ RÁC HỐ GA #12 ĐẦY 75% – cần dọn';
+ al.style.display=warn?'block':'none';al.textContent=t<76?'📡 LoRa: TRIỀU DÂNG VÀO CỐNG – khoá 2 lớp đã đóng · trụ cảnh báo gần nhất chuyển VÀNG':'📡 LoRa: GIỎ RÁC HỐ GA #12 ĐẦY 75% – cần dọn';
  const [cp,ct]=camAt(t);C.position.set(...cp);C.lookAt(new THREE.Vector3(...ct));
  const ph=PH.find(p=>t>=p[0]&&t<p[1])||PH[PH.length-1];
  cap.style.display=ph[2]?'block':'none';cap.querySelector('.ph').textContent=ph[2];cap.querySelector('.t').textContent=ph[3];cap.querySelector('.d').textContent=ph[4];
  const ballS=riserLv>=-72?'Đã bịt':fill>0?'Đang nổi':'Ở đáy';
- st.innerHTML=[['⏱ Giờ',clock(t)],['🌧 Mưa',rainI==0?'Không':rainI>1.5?'150 mm/h':'60 mm/h'],['🛢 Bể trữ',Math.round(fill*100)+'%'],['🟠 Bóng phao',ballS],['🧺 Giỏ rác',bPct+'%'],['🌊 Cống chính',tide>.3?'Triều cường':outflow?'Đang thoát':'Bình thường'],['🚪 Van lật',flapPivot.rotation.z<-.05?'Mở':'Đóng']].map(([a,b])=>`<div>${a}<b>${b}</b></div>`).join('');
+ st.innerHTML=[['⏱ Giờ',clock(t)],['🌧 Mưa',rainI==0?'Không':rainI>1.5?'150 mm/h':'60 mm/h'],['🛢 Bể trữ',Math.round(fill*100)+'%'],['🟠 Bóng phao',ballS],['🧺 Giỏ rác',bPct+'%'],['🌊 Cống chính',tide>.3?'Triều cường':outflow?'Đang thoát':'Bình thường'],['🛡 Mỏ vịt + cửa lật',open>.05?'Mở (xả)':tide>.3?'Đóng 2 lớp':'Khép chờ']].map(([a,b])=>`<div>${a}<b>${b}</b></div>`).join('');
  const intro=t<6?1-ss(4.5,6,t):0,out=ss(92,93.5,t);card.style.opacity=Math.max(intro,out);
- card.innerHTML=t<10?`<div><h1>HỐ GA THỤ ĐỘNG</h1><p>Mô phỏng vận hành 7 giai đoạn · AquaSentinel AI 2.0</p><p>Mưa đợt đầu · tràn an toàn · xả chậm · triều cường · bảo trì</p></div>`:
- `<div><h1>Không điện · không mô-tơ · không ngập</h1><p>Giữ 0,85m³ nước bẩn đợt đầu/hố ga · chặn rác bằng lưới Coanda</p><p>Van lật + van Tesla chống triều cường · cảm biến LoRa báo dọn rác</p><p style="font-size:14px;margin-top:14px">Mô phỏng minh hoạ nguyên lý, số liệu sơ bộ cần kiểm chứng</p></div>`;
+ card.innerHTML=t<10?`<div><h1>HỐ GA THỤ ĐỘNG</h1><p>Mô phỏng vận hành 7 giai đoạn · lớp CHẶN TẬN GỐC</p><p>Mưa đợt đầu · tràn an toàn · xả chậm · triều cường · bảo trì</p></div>`:
+ `<div><h1>Không điện · không mô-tơ · không ngập</h1><p>Giữ 0,85m³ nước bẩn đợt đầu/hố ga · chặn rác bằng lưới Coanda</p><p>Khoá chống triều 3 lớp: lưới lọc → van mỏ vịt → cửa lật · ống đo triều báo LoRa</p><p style="font-size:14px;margin-top:14px">Mô phỏng minh hoạ nguyên lý, số liệu sơ bộ cần kiểm chứng</p></div>`;
  R.render(S,C)};
 window.ready=true;render(0);
 </script></body></html>
