@@ -133,7 +133,7 @@ Chưa gồm gateway LoRa ở trung tâm (dùng chung cho nhiều hộp).
 
 ## Files
 - `flood_beacon.ino`: firmware hộp Cột Báo Ngập (ESP32 + LoRa + siêu âm + đèn tháp 3 màu có còi + SOS)
-- [HO_GA_THU_DONG.md](HO_GA_THU_DONG.md): hố ga thụ động (lưới Coanda + ngăn đợt đầu bóng phao + khoá chống triều 3 lớp: lưới, van mỏ vịt, cửa lật), không cần điện
+- [HO_GA_THU_DONG.md](HO_GA_THU_DONG.md): hố ga thụ động (lưới Coanda + ngăn đợt đầu bóng phao + tách dòng 2 đường: van mỏ vịt + cửa tràn có cửa lật), không cần điện
 - `first_flush.ino`: firmware Cửa Xả Thông Minh, hướng dẫn ở [FIRST_FLUSH.md](FIRST_FLUSH.md)
 - `classify.py`: luật AI phân biệt chảy tràn / xả thải và điểm nguy cơ ngập (có self-test: `python3 classify.py`)
 

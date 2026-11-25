@@ -1,14 +1,14 @@
-# Hố Ga Thụ Động v3: chặn rác, nước bẩn đợt đầu và triều ngược ngay tại hố ga
+# Hố Ga Thụ Động v4: chặn rác, nước bẩn đợt đầu và triều ngược ngay tại hố ga
 
 Xử lý **ngay tại hố ga hàm ếch** ven đường, trước khi nước xuống cống chính rồi ra biển. Dùng 3 nguyên lý cơ khí đã được chứng minh, **không cần điện**. Hộp Cửa Xả Thông Minh ([FIRST_FLUSH.md](FIRST_FLUSH.md)) vẫn là lớp cuối ở cửa xả.
 
-![Bản thiết kế 3D v3](hoga3d_v3.png)
+![Bản thiết kế 3D v4](hoga3d_v4.png)
 
-![Cận cảnh khoá chống triều](hoga3d_v3_van.png)
+Mô hình 3D xoay được: tải [hoga3d_v4.html](hoga3d_v4.html) rồi mở bằng Chrome. Video mô phỏng (bản v3, chưa có đường B): [hoga_mophong.html](hoga_mophong.html). Các bản cũ: [v3](hoga3d_v3.png), [v2 dùng van Tesla](hoga3d_v2.png).
 
-Mô hình 3D xoay được: tải [hoga3d_v3.html](hoga3d_v3.html) rồi mở bằng Chrome (thêm `?detail` để xem cận cảnh van). Video mô phỏng: [hoga_mophong.html](hoga_mophong.html). Bản cũ dùng van Tesla: [hoga3d_v2.png](hoga3d_v2.png).
-
-**v3 thay gì so với v2:** bỏ van Tesla làm van chính (Tesla chỉ cản bớt, vẫn rò ngược và dễ tắc rác). Thay bằng **khoá chống triều 3 lớp**, xem mục 1b.
+**Lịch sử thay đổi**
+- v3: bỏ van Tesla làm van chính (chỉ cản bớt, vẫn rò ngược, dễ tắc rác), thay bằng lưới Coanda + van mỏ vịt + cửa lật nối tiếp.
+- **v4: tách dòng 2 đường.** v3 đặt van mỏ vịt và cửa lật nối tiếp trên 1 ống, mưa cực lớn có thể bị giảm khả năng thoát. v4 tách thành đường A (mưa thường) và đường B (tràn khi mưa cực lớn), mỗi đường có van một chiều riêng. Thêm module rút lên và hố bùn. Xem mục 1b.
 
 ## 1. Thiết kế (kích thước thật, mm)
 | # | Bộ phận | Thông số |
@@ -20,38 +20,44 @@ Mô hình 3D xoay được: tải [hoga3d_v3.html](hoga3d_v3.html) rồi mở b�
 | 5 | Ống đứng + bóng phao | D200, bóng nhựa rỗng Ø150, đế côn cao su để bịt kín |
 | 6 | Bể trữ đợt đầu | Ống HDPE D600 dài 3m, chôn dưới vỉa hè |
 | 7 | Ống xả chậm | Ø8 có rọ lọc, nối cống bao (cống thu gom nước thải) |
-| 8 | Cửa lật composite (lớp 3) | D300, bản lề trên, gắn trên vách ngăn van trong hố ga |
-| 9 | Van mỏ vịt cao su EPDM (lớp 2) | D300, lắp trong đầu ống ra, mỏ hướng về cống chính D1000 |
+| 8 | Đường B: cửa tràn cao + cửa lật nhẹ | Ống D300, miệng cao hơn đỉnh ống ra 300; cửa lật composite ở đầu ra vào cống chính (kiểm tra qua hố thăm cống chính) |
+| 9 | Đường A: van mỏ vịt cao su EPDM | D300, lắp trong đầu ống ra, mỏ cong có gân cứng chống lật, hướng về cống chính D1000 |
 | 10 | Ống đo triều + công tắc phao | Ống PVC Ø21 nối vào ống ra phía sau van mỏ vịt, dẫn về ngăn van |
 | 11 | Cảm biến (tuỳ chọn) | ESP32 + LoRa + siêu âm + công tắc phao, pin |
+| 12 | Hố bùn | Đáy hố thu dốc về hố Ø240 sâu 140 ở giữa |
+| — | Module rút lên | Khung lưới Coanda và giỏ rác là 2 module inox/composite có tay cầm, rút qua nắp gang |
 | — | Thân hố ga | BTCT lòng 1200×1000, sâu 1200, thành 150 |
-
-**Ngăn van:** vách ngăn thấp (cao 440) tách góc hố thu thành ngăn riêng 350×380, có ống ngắn D300 xuyên vách. Nhấc nắp gang là với tới cả 2 van để kiểm tra, thay.
 
 **Đường tràn an toàn:** khi mưa vượt công suất, nước cùng rác tràn qua mép dưới lưới → giỏ → hố thu → ống ra. Hố ga không bao giờ thoát nước kém hơn hố ga thường.
 
-## 1b. Khoá chống triều 3 lớp
+## 1b. Chống triều + tách dòng 2 đường
 
 | | Van Tesla | Cửa lật | Van mỏ vịt cao su |
 |---|---|---|---|
 | Đóng kín | Không, chỉ cản bớt, vẫn rò | Kín nếu không kẹt rác | Kín nếu không kẹt rác |
-| Bộ phận chuyển động | Không | Bản lề (rỉ trong nước mặn) | Không (môi cao su đàn hồi) |
-| Chênh mực để mở | Không cần | Cửa gang nặng cần chênh lớn; composite nhẹ thì vài cm | Vài cm |
-| Hỏng thường gặp | Tắc kênh hẹp | Rác kẹt khe, bản lề kẹt, đập mạnh, bị trộm | Rác kẹt giữa 2 môi, cao su lão hoá |
+| Bộ phận chuyển động | Không | Bản lề | Không (môi cao su đàn hồi) |
+| Chênh mực để mở | Không cần | Cửa nhẹ: vài cm | Vài cm |
+| Hỏng thường gặp | Tắc kênh hẹp | Rác kẹt khe, bản lề kẹt | Rác kẹt giữa 2 môi, cao su lão hoá |
 
-**Nhận xét:** cửa lật và mỏ vịt đều hỏng chủ yếu vì **rác kẹt**. Hố ga này đã có lưới Coanda lọc rác > 1 mm phía trước, nên ghép lại thành 3 lớp nối tiếp:
+Cả cửa lật và mỏ vịt đều hỏng chủ yếu vì **rác kẹt**, nên đặt **lưới Coanda lọc rác trước** để bảo vệ van.
 
-1. **Lớp 1 – Lưới Coanda:** lọc rác trước khi nước tới van. Vừa chặn rác ra biển, vừa bảo vệ 2 lớp van phía sau.
-2. **Lớp 2 – Van mỏ vịt EPDM trong ống ra (van chính):** lắp trong hố ga, không ra sát biển → không phơi nắng, ít hà bám, không bị phá, thay được qua nắp gang.
-3. **Lớp 3 – Cửa lật composite trên vách ngăn van (dự phòng):** nếu mỏ vịt bị kẹt hở, nước ngược tràn vào ngăn van sẽ ép cửa lật đóng vào vách. Cửa composite nhẹ, nằm trong hố ga nên không gặp nước mặn thường xuyên, không bị trộm.
+**Tách dòng theo lưu lượng:**
+- **Đường A (mưa thường, phần lớn thời gian):** lưới Coanda → khay/giỏ → hố thu → **van mỏ vịt D300** → cống chính. Nước đã qua lưới nên không kẹt rác vào môi van.
+- **Đường B (mưa cực lớn):** cửa tràn D300 đặt **cao hơn đỉnh ống ra 300**. Mưa thường nước không lên tới, không chảy qua. Khi nước trong hố dâng cao, nước tràn vào đường B và xả thẳng ra cống chính qua **cửa lật composite nhẹ**.
+- **Không cần đối trọng:** chính độ cao của cửa tràn quyết định lúc nào đường B làm việc. Cửa lật chỉ cần nhẹ để chặn triều. Bỏ đối trọng → rẻ hơn, không phải chỉnh, ít kẹt, ít rỉ.
+- **Khi triều lên:** đường A có van mỏ vịt chặn, đường B có cửa lật bị nước ngoài ép chặt → cả 2 đường đều một chiều.
+- So với v3 (2 van nối tiếp): mỗi đường chỉ có 1 van nên ít tổn thất, nhưng mỗi đường chỉ còn 1 lớp chặn. Đổi lại an toàn chống ngập là ưu tiên số 1.
 
-2 van dùng **2 cơ chế khác nhau** (môi cao su đàn hồi / cửa đóng bằng trọng lực), nên ít khi hỏng cùng lúc.
+**Ống đo triều (bình thông nhau):** ống Ø21 nối vào ống ra phía cống chính. Triều dâng vào cống thì nước trong ống dâng theo, nâng công tắc phao → ESP32 gửi LoRa → hộp báo động trên trụ điện gần đó chuyển **vàng sớm**, trước khi nước lên mặt đường.
 
-**Vì sao không dùng phao nổi bịt ống:** phao nổi sẽ tự bịt cả khi mưa to làm nước dâng xuôi chiều trong hố ga → hố ga không thoát được, gây ngập. Cửa lật chỉ đóng khi nước đẩy **ngược chiều**, nên an toàn hơn.
+**Tuỳ chọn – phao khoá mùi mùa khô:** bóng nhựa trong lồng nằm trên miệng thu khi hố khô để chặn mùi, có nước thì nổi lên mở. Chỉ dùng để **chặn mùi**, không chống triều (triều dâng vào hố sẽ làm phao nổi, mở ra). Đặt đế cao hơn đáy để cát không đọng làm hở.
 
-**Ống đo triều (bình thông nhau):** ống Ø21 nối vào ống ra phía cống chính. Khi triều dâng vào cống, nước trong ống Ø21 dâng theo và nâng công tắc phao → ESP32 gửi LoRa "cống chính đang dâng ngược" → hộp báo động trên trụ điện gần đó chuyển **vàng sớm**, trước khi nước tràn lên mặt đường. Nối lớp "Chặn tận gốc" với lớp "Cảnh báo kịp thời".
+**Đã cân nhắc và không dùng:**
+- Phao nổi bịt ống ra để chống triều: mưa to nước dâng xuôi chiều cũng làm phao nổi, bịt ống → ngập.
+- Rãnh Tesla micro trên van mỏ vịt để giảm búa nước: cống thoát nước mưa chảy không áp, vận tốc thấp nên búa nước nhỏ; rãnh vài mm gần như không có tác dụng, khó gia công trên cao su, dễ bám bùn. Chống lật mỏ vịt bằng loại mỏ cong có gân cứng.
+- Van Tesla làm van chính: vẫn rò ngược, dễ tắc. Chỉ giữ trong thí nghiệm so sánh.
 
-**Van Tesla:** không dùng trong bản chính. Có thể giữ làm thí nghiệm so sánh trên mô hình (mục 6).
+**Tính mới (nói đúng mức):** lưới Coanda cho cửa thu vỉa hè đã có sản phẩm ở nước ngoài; ở VN đã có hố ga ngăn mùi dùng song chắn + cửa lật. Điểm mới là **cách tích hợp** cho hố ga hàm ếch: lưới Coanda tự làm sạch + tách dòng 2 đường + van một chiều trên mỗi đường + giữ nước bẩn đợt đầu + ống đo triều báo sớm cho trụ cảnh báo. Không ghi "chưa có trên thị trường".
 
 ## 2. Tính toán sơ bộ (1 hố ga, khoảng cách 30m)
 | Hạng mục | Công thức | Kết quả |
@@ -63,7 +69,8 @@ Mô hình 3D xoay được: tải [hoga3d_v3.html](hoga3d_v3.html) rồi mở b�
 | Bể HDPE D600 dài 3m | π·0,3²·3 | 0,85 m³ ≈ 2,8mm mưa |
 | Thời gian bể tự rỗng | lỗ Ø8, Cd=0,6, cột nước 0,6m | ~4,5 giờ (Ø5 thì ~12 giờ và dễ tắc) |
 | Vận tốc ống ra | 11 L/s qua D300 | 0,16 m/s |
-| Tổn thất qua mỏ vịt + cửa lật | ước tính, **phải đo** | ~3–8 cm cột nước, hố sâu 1,2 m còn dư |
+| Tổn thất qua van mỏ vịt (đường A) | ước tính, **phải đo** | ~2–5 cm cột nước |
+| Khả năng đường B | D300, cột nước 0,3 m: Q ≈ 0,6·A·√(2gh) | ~100 L/s, gấp ~9 lần lưu lượng đỉnh (chưa tính ma sát ống) |
 
 - Vì sao chọn 3mm: các nghiên cứu "first-flush" cho thấy phần nước đầu cơn mưa chứa tỉ lệ chất bẩn cao hơn hẳn phần sau. Con số chính xác khác nhau theo từng tuyến đường, **phải đo**: lấy mẫu mỗi 5 phút trong 3–5 cơn mưa, đo độ đục/TSS để vẽ đường cong.
 - Hố ga thường chỉ chứa được ~0,1 m³ (≈0,3mm mưa), quá ít. Vì vậy bản v2 thêm **ống trữ HDPE dưới vỉa hè**.
@@ -72,15 +79,17 @@ Mô hình 3D xoay được: tải [hoga3d_v3.html](hoga3d_v3.html) rồi mở b�
 | Hạng mục | Chi phí |
 |---|---|
 | Lưới Coanda inox wedge-wire 0,9×0,8m | 6–10 |
-| Giỏ rác, khay, ống đứng, bóng phao, lồng | 3–4 |
+| 2 module rút lên (khung lưới, giỏ) + khay, ống đứng, bóng phao | 4–6 |
 | Ống HDPE D600 3m + đào lấp, hoàn trả vỉa hè | 10–15 |
 | Van mỏ vịt cao su EPDM D300 lắp trong ống | 6–12 |
-| Cửa lật composite D300 + vách ngăn van | 3–5 |
+| Đường B: ống D300 + cửa lật composite nhẹ | 3–5 |
 | ESP32 + LoRa + pin + ống đo triều, công tắc phao | 1,3–2 |
 | Nhân công lắp đặt | 5–8 |
-| **Tổng** | **34–56** |
+| **Tổng (bản đầy đủ)** | **35–58** |
 
-- Bản rút gọn chỉ có lưới Coanda + giỏ rác (lắp vào hố ga có sẵn, không đào): ~12–18 triệu.
+- **Bản lắp vào hố ga có sẵn** (module lưới + giỏ, van mỏ vịt, đường B, cảm biến; không bể HDPE, không đào vỉa hè): ~22–39 triệu. Dễ áp dụng thực tế nhất.
+- Bản tối thiểu chỉ có module lưới Coanda + giỏ rác: ~12–18 triệu.
+- Khoảng giá rộng chủ yếu vì van mỏ vịt EPDM D300 chưa có báo giá.
 - Mô hình demo tỉ lệ 1:5 (mica, in 3D, ống PVC): ~1,5–2 triệu.
 - Giá tham khảo, cần lấy báo giá thật (đặc biệt tấm wedge-wire).
 
@@ -96,7 +105,9 @@ Mô hình 3D xoay được: tải [hoga3d_v3.html](hoga3d_v3.html) rồi mở b�
 | Lưới Coanda cần chênh cao ~30–50cm | Chọn hố ga sâu ≥ 1m; hố nông chỉ lắp giỏ rác |
 | Phải dọn giỏ rác | Cảm biến báo khi giỏ > 70%; giỏ có quai nhấc qua nắp |
 | Lỗ xả chậm dễ tắc | Dùng Ø8 + rọ lọc, kiểm tra theo mùa |
-| Van mỏ vịt bị rác kẹt hở | Lưới Coanda lọc trước; cửa lật dự phòng phía sau |
+| Van mỏ vịt bị rác kẹt hở | Lưới Coanda lọc trước; kiểm tra khi rút module |
+| Hố ga hàm ếch nông (< 1 m) | Lưới Coanda thiếu chênh cao → dùng lưới nghiêng phẳng tự trượt rác |
+| Module nặng khi đầy rác ướt (40–60 kg) | Chia 2 module, dùng móc tời tay |
 | Cao su lão hoá | Đặt trong ống, tránh nắng; kiểm tra mỗi mùa mưa, thay sau vài năm |
 | Đào vỉa hè cần giấy phép | Làm thí điểm 3–5 hố ga gần cửa xả, chợ, khu nhà hàng cùng đơn vị thoát nước |
 
@@ -109,7 +120,7 @@ Mô hình 3D xoay được: tải [hoga3d_v3.html](hoga3d_v3.html) rồi mở b�
 4. **Đo được, chứng minh được:** cảm biến + LoRa gửi dữ liệu về AquaSentinel; mỗi bộ phận có thí nghiệm định lượng.
 
 ## 6. Thí nghiệm trên mô hình
-1. **Giàn thử chống triều** (ống mica trong suốt): so 5 cấu hình: chỉ van Tesla in 3D / chỉ cửa lật / chỉ mỏ vịt / mỏ vịt + cửa lật / mỏ vịt + cửa lật + lưới. Cho nước ngược cao 10–20–40 cm, đo lượng rò (lít/phút) bằng cốc chia vạch. Lặp lại khi thả lá, nilon, que vào dòng chảy thuận trước đó. Ra biểu đồ so sánh.
+1. **Giàn thử chống triều** (ống mica trong suốt): so 5 cấu hình: chỉ van Tesla in 3D / chỉ cửa lật / chỉ mỏ vịt / mỏ vịt có lưới lọc trước / tách dòng 2 đường (v4). Đo thêm lưu lượng thoát tối đa của từng cấu hình khi đổ nước mạnh. Cho nước ngược cao 10–20–40 cm, đo lượng rò (lít/phút) bằng cốc chia vạch. Lặp lại khi thả lá, nilon, que vào dòng chảy thuận trước đó. Ra biểu đồ so sánh.
 2. **Lưới Coanda và lưới phẳng:** 10 xô nước có lá, cát, giấy vụn. Cân rác trong giỏ, xem lưới nào tắc.
 3. **Bể trữ đợt đầu:** đổ nước cà phê rồi nước sạch. Đo độ đục nước ra cống chính khi có và không có bể.
 
