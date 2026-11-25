@@ -4,7 +4,7 @@ Xử lý **ngay tại hố ga hàm ếch** ven đường, trước khi nước x
 
 ![Bản thiết kế 3D v4](hoga3d_v4.png)
 
-Mô hình 3D xoay được: tải [hoga3d_v4.html](hoga3d_v4.html) rồi mở bằng Chrome. Video mô phỏng toàn bộ quá trình (v4): [tải video](https://github.com/CaoLP/Sample-Projects/releases/tag/hoga-mophong-v4), bản tương tác [hoga_mophong.html](hoga_mophong.html). Các bản cũ: [v3](hoga3d_v3.png), [v2 dùng van Tesla](hoga3d_v2.png).
+Mô hình 3D xoay được: tải [hoga3d_v4.html](hoga3d_v4.html) rồi mở bằng Chrome. Video mô phỏng toàn bộ quá trình (v4): [tải video](https://github.com/CaoLP/Sample-Projects/releases/tag/hoga-mophong-v4.1), bản tương tác [hoga_mophong.html](hoga_mophong.html). Các bản cũ: [v3](hoga3d_v3.png), [v2 dùng van Tesla](hoga3d_v2.png).
 
 **Lịch sử thay đổi**
 - v3: bỏ van Tesla làm van chính (chỉ cản bớt, vẫn rò ngược, dễ tắc rác), thay bằng lưới Coanda + van mỏ vịt + cửa lật nối tiếp.

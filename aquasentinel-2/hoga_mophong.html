@@ -34,9 +34,9 @@ bx(-280,340,-170,-10,-250,-240,soil);
 bx(-280,0,-10,0,-240,60,asphalt);for(let x=-260;x<0;x+=40)bx(x,x+20,.1,.6,-200,60,M(0xf8fafc));
 bx(0,15,0,15,-240,-60,concrete);bx(0,15,12,15,-60,60,concrete);
 bx(150,340,0,15,-240,60,tile);bx(0,150,0,15,-240,-65,tile);bx(0,150,0,15,-65,-25,concrete);
-bx(0,150,-135,-120,-65,50,concrete);bx(0,150,-120,0,-65,-50,concrete);
+bx(0,55,-165,-120,-65,50,concrete);bx(95,150,-165,-120,-65,50,concrete);bx(55,95,-165,-120,-65,-20,concrete);bx(55,95,-165,-150,-20,50,concrete);bx(0,150,-120,0,-65,-50,concrete);
 bx(0,15,-120,-10,-65,50,tr(0xa8b0ba,.22));bx(0,15,-10,12,-65,-40,concrete);bx(0,15,-10,12,40,50,concrete);bx(135,150,-120,0,-65,50,concrete);
-for(const[x0,x1,y0,y1]of[[0,150,-135,-120],[0,15,-120,12],[135,150,-120,0]])bx(x0,x1,y0,y1,50,51,cut);
+for(const[x0,x1,y0,y1]of[[0,55,-165,-120],[95,150,-165,-120],[55,95,-165,-150],[0,15,-120,12],[135,150,-120,0]])bx(x0,x1,y0,y1,50,51,cut);
 for(let z=-36;z<=36;z+=8)bx(6,9,-10,12,z-1,z+1,dark);
 for(let y=-100;y<=-25;y+=25){bx(55,57,y,y+2,-50,-38,steel);bx(73,75,y,y+2,-50,-38,steel);bx(55,75,y,y+2,-39,-37,steel)}
 // lưới Coanda
@@ -65,8 +65,16 @@ cyl(15,15,-135,-100,-30,pvc,'x');
 // đường B: cửa tràn cao D300 + cửa lật nhẹ ở đầu ra vào cống chính
 cyl(15,15,-162,-55,30,pvc,'x');const bypW=cyl(10,15,-162,-62,30,tr(0x38bdf8,0),'x');
 const flapPivot=new THREE.Group();flapPivot.position.set(-163,-40,30);S.add(flapPivot);bx(-1,1,-30,0,-16,16,M(0x0f766e,{roughness:.5}),flapPivot);
-// hố bùn
-cyl(12,-134,-120.5,110,0,M(0x57534e),'y');
+// hố lắng bùn ở tâm đáy Ø400 sâu 300 (mặt cắt qua tâm) + xô inox + cát
+{const pm=M(0x57534e,{side:THREE.DoubleSide});const w=new THREE.Mesh(new THREE.CylinderGeometry(20,20,30,32,1,true,Math.PI/2,Math.PI),pm);w.position.set(75,-135,0);S.add(w);
+const f=new THREE.Mesh(new THREE.CircleGeometry(20,32,0,Math.PI),pm);f.rotation.x=-Math.PI/2;f.position.set(75,-149.9,0);S.add(f);
+
+for(const sg of[-1,1]){const r=box(40,1,40,75+sg*40,-120.2,0,M(0x78716c));r.rotation.z=sg*.05}}
+const pail=new THREE.Group();S.add(pail);
+{const sm=M(0xcbd5e1,{metalness:.7,roughness:.35,side:THREE.DoubleSide,transparent:true,opacity:.75});const b=new THREE.Mesh(new THREE.CylinderGeometry(18,17,28,32,1,true,Math.PI/2,Math.PI),sm);b.position.set(75,-135,0);pail.add(b);
+const hd=new THREE.Mesh(new THREE.TorusGeometry(17,.8,6,24,Math.PI),M(0x475569));hd.position.set(75,-121,0);pail.add(hd);
+for(let i=0;i<14;i++)box(1.2,1.2,.6,62+Math.random()*26,-146+Math.random()*22,-12-Math.random()*4,dark,pail)}
+const sandMat=M(0xc2a36b,{roughness:1,side:THREE.DoubleSide}),sandG=new THREE.CylinderGeometry(16.5,16.5,1,32,1,false,Math.PI/2,Math.PI);sandG.translate(0,.5,0);const sand=new THREE.Mesh(sandG,sandMat);sand.position.set(75,-148,0);pail.add(sand);
 // van mỏ vịt EPDM (lớp 2)
 const rub=M(0x111827,{roughness:.6});cyl(15.5,15,2,-100,-30,rub,'x');
 const db=new THREE.Mesh(new THREE.ConeGeometry(14.5,24,32,1,true),M(0x111827,{roughness:.6,side:THREE.DoubleSide}));db.rotation.z=Math.PI/2;db.scale.set(.3,1,1);db.position.set(-10,-100,-30);S.add(db);
@@ -105,6 +113,7 @@ const toStore=stream(26,poly([[40,-71,0],[40,-104,0],[200,-105,0],[215,-110,0]])
 const over=stream(18,poly([[80,-66,30],[87,-64,30],[90,-80,30],[90,-108,20]]),0x38bdf8);
 const outS=stream(30,poly([[90,-112,0],[40,-104,-30],[20,-102,-30],[-20,-100,-30],[-135,-100,-30],[-175,-130,-30]]),0x0ea5e9);
 const byp=stream(24,poly([[60,-64,30],[15,-58,30],[-162,-58,30],[-172,-75,30],[-180,-95,30]]),0x0ea5e9);
+const grit=stream(16,poly([[100,-109,10],[92,-118,6],[80,-130,-6],[76,-140,-8]]),0xb08a4a);const grit2=stream(12,poly([[45,-110,14],[60,-119,8],[70,-130,-4],[74,-140,-6]]),0xb08a4a);
 const slow=stream(10,poly([[232,-127,-200],[300,-127,-200],[300,-148,-200]]),0x7c4a1e);
 const rev=stream(30,poly([[-178,-125,-30],[-135,-102,-30],[-24,-102,-30]]),0xef4444);const revB=stream(10,poly([[-190,-95,30],[-168,-60,30]]),0xef4444);[...rev.arr,...revB.arr].forEach(m=>{m.material.transparent=true;m.material.depthTest=false;m.renderOrder=5});
 // ===== dòng thời gian =====
@@ -112,16 +121,17 @@ const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),ss=(a,b,t)=>{const x=cl((t-a)/(b
 const PH=[[0,6,'','MÔ PHỎNG VẬN HÀNH','Hố ga v4 – lớp CHẶN TẬN GỐC: lưới Coanda tự làm sạch + bể trữ nước bẩn đợt đầu + tách dòng 2 đường (A: van mỏ vịt, B: cửa tràn cao có cửa lật) + ống đo triều báo LoRa.'],
 [6,14,'GIAI ĐOẠN 1/7','Trời khô','Rác, lá cây, chai nhựa và bụi bẩn tích tụ trên mặt đường. Bể trữ rỗng, bóng phao nằm ở đáy ống đứng.'],
 [14,34,'GIAI ĐOẠN 2/7','Mưa bắt đầu: giữ nước đợt đầu','Nước đầu cơn mưa cuốn chất bẩn (màu nâu) vào cửa hàm ếch. Lưới Coanda cho nước lọt khe, rác trượt xuống giỏ. Nước bẩn chảy xuống ống đứng, đầy dần bể HDPE D600 dưới vỉa hè.'],
-[34,46,'GIAI ĐOẠN 3/7','Bể đầy: bóng phao tự bịt','Bể trữ đầy 0,85m³, nước dâng lên đẩy bóng phao bịt đế côn. Nước mưa phía sau (đã sạch hơn) tràn qua gờ khay xuống hố thu, đi ĐƯỜNG A: đẩy mở van mỏ vịt (chỉ cần chênh vài cm) ra cống chính. Nước đã qua lưới nên không có rác kẹt môi van.'],
+[34,46,'GIAI ĐOẠN 3/7','Bể đầy: bóng phao tự bịt','Bể trữ đầy 0,85m³, nước dâng lên đẩy bóng phao bịt đế côn. Nước mưa phía sau (đã sạch hơn) tràn qua gờ khay xuống hố thu, đi ĐƯỜNG A: đẩy mở van mỏ vịt (chỉ cần chênh vài cm) ra cống chính. Nước đã qua lưới nên không có rác kẹt môi van. Cát lọt lưới chìm xuống, trượt theo đáy dốc 5% về HỐ LẮNG BÙN ở tâm đáy (Ø400 sâu 300, có xô inox). Đáy ống ra cao hơn đáy 20 cm nên cát không bị cuốn đi.'],
 [46,54,'GIAI ĐOẠN 4/7','Mưa cực lớn: đường B tự mở','Đường A không thoát kịp, nước trong hố dâng tới cửa tràn đặt cao hơn ống ra 30 cm. Nước tràn vào ĐƯỜNG B, đẩy mở cửa lật xả thẳng ra cống chính (~100 L/s). Không cần đối trọng: độ cao cửa tràn quyết định lúc nào đường B làm việc. Hố ga không bao giờ thoát kém hơn hố ga thường.'],
 [54,62,'GIAI ĐOẠN 5/7','Tạnh mưa: xả chậm về nhà máy','Lỗ Ø8 xả chậm nước bẩn trong bể về cống bao → nhà máy xử lý nước thải. Sau khoảng 4,5 giờ bể rỗng, bóng phao rơi xuống, sẵn sàng cho cơn mưa sau.'],
 [62,76,'GIAI ĐOẠN 6/7','Triều cường chảy ngược','Nước biển dâng đầy cống chính, đẩy ngược vào ống ra. Đường A: van mỏ vịt bị ép khép kín. Đường B: cửa lật bị nước ngoài ép đóng chặt. Cả 2 đường đều một chiều. Nước trong ống đo triều dâng, nâng công tắc phao → LoRa báo trụ cảnh báo gần đó chuyển VÀNG.'],
-[76,92,'GIAI ĐOẠN 7/7','Bảo trì: mở nắp gang dọn rác','Cảm biến siêu âm báo giỏ rác đầy 75% qua LoRa. Công nhân mở nắp gang, rút module giỏ rác lên bằng tay cầm, đổ rác vào bao, lắp lại và đóng nắp. Cát sỏi gom ở hố bùn đáy hố, múc 1 chỗ. Không cần xuống hố ga.'],
-[92,99,'','TÓM TẮT','']];
-const CAM=[[0,[330,300,900],[40,-70,-70]],[5,[250,260,820],[40,-70,-70]],[13,[250,260,820],[40,-70,-70]],[16,[240,60,380],[75,-62,0]],[24,[240,60,380],[75,-62,0]],[27,[360,50,330],[215,-95,-60]],[33,[360,50,330],[215,-95,-60]],[36,[240,60,380],[75,-62,0]],[40,[240,60,380],[75,-62,0]],[42,[-150,15,270],[15,-97,-30]],[46,[-150,15,270],[15,-97,-30]],[48,[-30,20,360],[-75,-62,10]],[53,[-30,20,360],[-75,-62,10]],[56,[360,50,330],[215,-95,-60]],[61,[360,50,330],[215,-95,-60]],[64,[-215,30,330],[-35,-85,-5]],[75,[-215,30,330],[-35,-85,-5]],[78,[330,220,480],[110,-20,-20]],[91,[330,220,480],[110,-20,-20]],[95,[250,260,820],[40,-70,-70]]];
+[76,90,'GIAI ĐOẠN 7/7','Bảo trì: mở nắp gang dọn rác','Cảm biến siêu âm báo giỏ rác đầy 75% qua LoRa. Công nhân mở nắp gang, rút module giỏ rác lên bằng tay cầm, đổ rác vào bao, lắp lại. Không cần xuống hố ga.'],
+[90,101,'GIAI ĐOẠN 7/7','Bảo trì: nhấc xô hố lắng bùn','Cát sỏi gom hết về hố lắng ở tâm đáy. Móc quai nhấc xô inox đục lỗ lên qua nắp gang: nước rút qua lỗ, chỉ còn cát. Đổ cát vào bao, thả xô lại, đóng nắp. Mùa mưa kiểm tra mỗi tháng.'],
+[101,108,'','TÓM TẮT','']];
+const CAM=[[0,[330,300,900],[40,-70,-70]],[5,[250,260,820],[40,-70,-70]],[13,[250,260,820],[40,-70,-70]],[16,[240,60,380],[75,-62,0]],[24,[240,60,380],[75,-62,0]],[27,[360,50,330],[215,-95,-60]],[33,[360,50,330],[215,-95,-60]],[36,[190,-50,300],[75,-118,0]],[40,[190,-50,300],[75,-118,0]],[42,[-150,15,270],[15,-97,-30]],[46,[-150,15,270],[15,-97,-30]],[48,[-30,20,360],[-75,-62,10]],[53,[-30,20,360],[-75,-62,10]],[56,[360,50,330],[215,-95,-60]],[61,[360,50,330],[215,-95,-60]],[64,[-215,30,330],[-35,-85,-5]],[75,[-215,30,330],[-35,-85,-5]],[78,[330,220,480],[110,-20,-20]],[89,[330,220,480],[110,-20,-20]],[91,[260,40,360],[75,-70,0]],[100,[260,40,360],[75,-70,0]],[104,[250,260,820],[40,-70,-70]]];
 function camAt(t){let i=0;while(i<CAM.length-1&&CAM[i+1][0]<=t)i++;const a=CAM[i],b=CAM[Math.min(i+1,CAM.length-1)];const k=b[0]>a[0]?ss(a[0],b[0],t):1;return[a[1].map((v,j)=>lerp(v,b[1][j],k)),a[2].map((v,j)=>lerp(v,b[2][j],k))]}
 function clock(t){const f=m=>{const h=Math.floor(m/60)%24,mm=Math.floor(m%60);return`${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`};
- if(t<14)return f(13*60+50+(t-6)*1.2);if(t<54)return f(14*60+(t-14)*1.5);if(t<62)return f(15*60+(t-54)*34);if(t<76)return'02:'+String(10+Math.floor((t-62)*3)).padStart(2,'0')+' (đêm)';return'07:'+String(Math.floor((t-76)*2)).padStart(2,'0')+' (sáng)'}
+ if(t<14)return f(13*60+50+(t-6)*1.2);if(t<54)return f(14*60+(t-14)*1.5);if(t<62)return f(15*60+(t-54)*34);if(t<76)return'02:'+String(10+Math.floor((t-62)*3)).padStart(2,'0')+' (đêm)';return f(7*60+(t-76)*2)+' (sáng)'}
 const cap=document.getElementById('cap'),st=document.getElementById('st'),al=document.getElementById('alert'),card=document.getElementById('card');
 window.render=function(t){
  const rainI=t<14?0:t<16?ss(14,16,t):t<46?1:t<54?(t<47?lerp(1,2,ss(46,47,t)):2):t<55?2*(1-ss(54,55,t)):0;
@@ -146,12 +156,14 @@ window.render=function(t){
  tideMat.opacity=.6*tide;tideW.visible=tide>.02;const th=22*tide;tubeW.scale.y=Math.max(.01,th);tubeW.visible=tide>.02;fsw.position.y=-74+th;
  const run=(s,on,speed,phase=0)=>s.arr.forEach((m,i)=>{m.visible=on;if(on){m.position.copy(s.pathFn(((t*speed)+i/s.arr.length+phase)%1))}});
  run(toStore,t>15&&t<34&&rainI>0,.35);run(over,t>35&&rainI>0,.6);run(outS,outflow,rainI>1.5?.5:.3);run(byp,bOpen>.3,.55);run(revB,t>64&&t<74,.3);run(slow,t>16&&t<62,t>54?.5:.15);
- run(rev,t>64&&t<74,.3);
+ run(rev,t>64&&t<74,.3);run(grit,t>35&&t<56&&rainI>0,.25);run(grit2,t>36&&t<56&&rainI>0,.22,.5);
+ const pl=t<91?0:t<93?ss(91,93,t)*150:t<97?150:150*(1-ss(97,99,t)),ps=t<93?0:t<94.5?ss(93,94.5,t)*120:t<96?120:120*(1-ss(96,97,t));pail.position.set(ps,pl,0);
+ const sandH=t>95?1:t<35?2:t<56?lerp(2,18,ss(35,56,t)):18;sand.scale.y=sandH;
  // trash
  let inB=0;const bOff=new THREE.Vector3(0,0,0);
  const lift=t<81?0:t<83?ss(81,83,t)*110:t<88?110:110*(1-ss(88,90,t)),side=t<83?0:t<85?ss(83,85,t)*150:t<87?150:150*(1-ss(87,88.5,t));
- basket.position.set(side,lift,0);hook.position.set(side,lift+(t>80&&t<91?0:400),0);bag.visible=t>80&&t<92;
- const cov=t<78?0:t<80?ss(78,80,t):t<90?1:1-ss(90,92,t);cover.position.set(75+150*ss(.5,1,cov),15+60*ss(0,.5,cov)*(1-ss(.5,1,cov))+0,-40);
+ basket.position.set(side,lift,0);hook.position.set(side,lift+(t>80&&t<91?0:400),0);bag.visible=t>80&&t<101;
+ const cov=t<78?0:t<80?ss(78,80,t):t<99?1:1-ss(99,101,t);cover.position.set(75+150*ss(.5,1,cov),15+60*ss(0,.5,cov)*(1-ss(.5,1,cov))+0,-40);
  trash.forEach((r,i)=>{const u=t-r.start;let p;
   if(u<0)p=r.road;else if(u<1.6){const k=u/1.6;p=[lerp(r.road[0],3,k),1.5,lerp(r.road[2],r.z,k)]}
   else if(u<2.2){const k=(u-1.6)/.6;p=[lerp(3,20,k),lerp(1.5,-10,k),r.z]}
@@ -167,10 +179,10 @@ window.render=function(t){
  const ph=PH.find(p=>t>=p[0]&&t<p[1])||PH[PH.length-1];
  cap.style.display=ph[2]?'block':'none';cap.querySelector('.ph').textContent=ph[2];cap.querySelector('.t').textContent=ph[3];cap.querySelector('.d').textContent=ph[4];
  const ballS=riserLv>=-72?'Đã bịt':fill>0?'Đang nổi':'Ở đáy';
- st.innerHTML=[['⏱ Giờ',clock(t)],['🌧 Mưa',rainI==0?'Không':rainI>1.5?'150 mm/h':'60 mm/h'],['🛢 Bể trữ',Math.round(fill*100)+'%'],['🟠 Bóng phao',ballS],['🧺 Giỏ rác',bPct+'%'],['🌊 Cống chính',tide>.3?'Triều cường':outflow?'Đang thoát':'Bình thường'],['🅰 Đường A (mỏ vịt)',open>.05?'Mở':tide>.3?'Đóng chặt':'Khép'],['🅱 Đường B (cửa lật)',bOpen>.3?'Đang tràn':tide>.3?'Đóng chặt':'Chờ']].map(([a,b])=>`<div>${a}<b>${b}</b></div>`).join('');
- const intro=t<6?1-ss(4.5,6,t):0,out=ss(92,93.5,t);card.style.opacity=Math.max(intro,out);
- card.innerHTML=t<10?`<div><h1>HỐ GA THỤ ĐỘNG</h1><p>Hố ga v4 · mô phỏng toàn bộ quá trình vận hành · lớp CHẶN TẬN GỐC</p><p>Mưa đợt đầu · mưa cực lớn tách dòng · xả chậm · triều cường · bảo trì</p></div>`:
- `<div><h1>Không điện · không mô-tơ · không ngập</h1><p>Giữ 0,85m³ nước bẩn đợt đầu/hố ga · chặn rác bằng lưới Coanda</p><p>Tách dòng 2 đường: A van mỏ vịt · B cửa tràn cao + cửa lật · ống đo triều báo LoRa</p><p>Module rút lên dọn rác · hố bùn gom cát sỏi</p><p style="font-size:14px;margin-top:14px">Mô phỏng minh hoạ nguyên lý, số liệu sơ bộ cần kiểm chứng</p></div>`;
+ st.innerHTML=[['⏱ Giờ',clock(t)],['🌧 Mưa',rainI==0?'Không':rainI>1.5?'150 mm/h':'60 mm/h'],['🛢 Bể trữ',Math.round(fill*100)+'%'],['🟠 Bóng phao',ballS],['🧺 Giỏ rác',bPct+'%'],['🌊 Cống chính',tide>.3?'Triều cường':outflow?'Đang thoát':'Bình thường'],['🅰 Đường A (mỏ vịt)',open>.05?'Mở':tide>.3?'Đóng chặt':'Khép'],['🅱 Đường B (cửa lật)',bOpen>.3?'Đang tràn':tide>.3?'Đóng chặt':'Chờ'],['⏳ Hố lắng',Math.round(sandH/24*100)+'%']].map(([a,b])=>`<div>${a}<b>${b}</b></div>`).join('');
+ const intro=t<6?1-ss(4.5,6,t):0,out=ss(101,102.5,t);card.style.opacity=Math.max(intro,out);
+ card.innerHTML=t<10?`<div><h1>HỐ GA THỤ ĐỘNG</h1><p>Hố ga v4 · mô phỏng toàn bộ quá trình vận hành · lớp CHẶN TẬN GỐC</p><p>Mưa đợt đầu · lắng cát · mưa cực lớn tách dòng · xả chậm · triều cường · bảo trì</p></div>`:
+ `<div><h1>Không điện · không mô-tơ · không ngập</h1><p>Giữ 0,85m³ nước bẩn đợt đầu/hố ga · chặn rác bằng lưới Coanda</p><p>Tách dòng 2 đường: A van mỏ vịt · B cửa tràn cao + cửa lật · ống đo triều báo LoRa</p><p>Module rút lên dọn rác · hố lắng bùn ở tâm đáy gom cát, nhấc xô là xong</p><p style="font-size:14px;margin-top:14px">Mô phỏng minh hoạ nguyên lý, số liệu sơ bộ cần kiểm chứng</p></div>`;
  R.render(S,C)};
 window.ready=true;render(0);
 </script></body></html>
