@@ -1,0 +1,154 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#fff}svg{display:block;font-family:Arial,Helvetica,sans-serif}</style></head><body>
+<svg width="1600" height="900" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+<defs>
+ <linearGradient id="pv" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1e3a8a"/><stop offset="1" stop-color="#0f172a"/></linearGradient>
+ <linearGradient id="bat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#1d4ed8"/></linearGradient>
+ <filter id="sh" x="-10%" y="-10%" width="130%" height="130%"><feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity=".25"/></filter>
+</defs>
+<rect width="1600" height="900" fill="#ffffff"/>
+
+<!-- ===== WIRES (drawn first) ===== -->
+<g fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+ <!-- solar -> TVS -> charger -->
+ <polyline points="230,195 230,232" stroke="#dc2626"/>
+ <polyline points="110,195 110,262" stroke="#111827"/>
+ <!-- charger -> battery -->
+ <polyline points="130,372 130,432" stroke="#dc2626"/><polyline points="210,372 210,432" stroke="#111827"/>
+ <!-- charger LOAD + -> fuse -> BUS 12V -->
+ <polyline points="282,300 345,300" stroke="#dc2626"/>
+ <polyline points="415,300 660,300 660,215 1330,215 1330,140 1372,140" stroke="#dc2626"/>
+ <!-- bus -> ULN COM pin 9 -->
+ <polyline points="1180,215 1180,352" stroke="#dc2626"/>
+ <!-- bus -> buck in -->
+ <polyline points="470,300 470,432" stroke="#dc2626"/>
+ <!-- buck out 5V -> ESP32 VIN & JSN 5V -->
+ <polyline points="602,470 650,470 650,560 702,560" stroke="#f97316"/>
+ <polyline points="650,560 650,850 1070,850 1070,792" stroke="#f97316"/>
+ <!-- GND rail -->
+ <polyline points="282,340 320,340 320,590" stroke="#111827"/><polyline points="692,590 692,880 1160,880 1160,792" stroke="#111827"/><polyline points="320,590 702,590" stroke="#111827"/>
+ <polyline points="420,490 400,490 400,590" stroke="#111827"/>
+ <polyline points="1050,492 1050,520 960,520 960,880" stroke="#111827"/>
+ 
+ <polyline points="760,782 760,880" stroke="#111827"/>
+ <!-- ULN outputs -> tower light colours -->
+ <polyline points="1232,380 1300,380 1300,230 1372,230" stroke="#ef4444"/>
+ <polyline points="1232,405 1310,405 1310,330 1372,330" stroke="#eab308"/>
+ <polyline points="1232,430 1320,430 1320,430 1372,430" stroke="#22c55e"/>
+ <polyline points="1232,455 1330,455 1330,545 1372,545" stroke="#64748b"/>
+ <!-- ESP32 -> ULN inputs -->
+ <polyline points="922,380 1028,380" stroke="#2563eb"/>
+ <polyline points="922,405 1028,405" stroke="#2563eb"/>
+ <polyline points="922,430 1028,430" stroke="#2563eb"/>
+ <polyline points="922,455 1028,455" stroke="#2563eb"/>
+ <!-- ESP32 -> LoRa SPI -->
+ <polyline points="922,280 980,280 980,115 1012,115" stroke="#9333ea"/>
+ <polyline points="922,300 990,300" stroke="#9333ea" stroke-width="0"/>
+ <!-- ESP32 -> JSN trig/echo -->
+ <polyline points="922,540 1010,540 1010,700 1100,700 1100,722" stroke="#0891b2"/>
+ <polyline points="922,565 990,565 990,712 1130,712 1130,722" stroke="#0891b2"/>
+ <!-- SOS -->
+ <polyline points="702,610 680,610 680,700 740,700 740,722" stroke="#0891b2"/>
+</g>
+
+<!-- ===== COMPONENTS ===== -->
+<!-- Solar panel -->
+<g filter="url(#sh)"><rect x="40" y="30" width="270" height="165" rx="8" fill="#cbd5e1"/><rect x="50" y="40" width="250" height="145" fill="url(#pv)"/>
+<g stroke="#64748b" stroke-width="1.5">
+ <line x1="112" y1="40" x2="112" y2="185"/><line x1="175" y1="40" x2="175" y2="185"/><line x1="237" y1="40" x2="237" y2="185"/>
+ <line x1="50" y1="88" x2="300" y2="88"/><line x1="50" y1="137" x2="300" y2="137"/></g></g>
+<text x="175" y="22" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">Tấm pin mặt trời 10W 18V</text>
+<!-- TVS -->
+<rect x="212" y="224" width="36" height="18" rx="3" fill="#111827"/><text x="256" y="238" font-size="15" fill="#334155">TVS SMBJ24A</text>
+
+<!-- Solar charger -->
+<g filter="url(#sh)"><rect x="60" y="262" width="222" height="110" rx="10" fill="#0f766e"/><rect x="82" y="276" width="90" height="44" rx="4" fill="#a7f3d0"/>
+<text x="127" y="305" text-anchor="middle" font-size="20" font-weight="bold" fill="#065f46">12.8V</text>
+<circle cx="200" cy="292" r="7" fill="#fbbf24"/><circle cx="224" cy="292" r="7" fill="#22c55e"/><circle cx="248" cy="292" r="7" fill="#ef4444"/>
+<text x="171" y="355" text-anchor="middle" font-size="16" fill="#ecfeff">SOLAR · BAT · LOAD</text></g>
+<text x="20" y="320" font-size="16" fill="#0f172a" transform="rotate(-90 20 320)" text-anchor="middle">Bộ sạc solar 10A</text>
+<text x="290" y="290" font-size="14" fill="#334155">LOAD+</text>
+
+<!-- Battery -->
+<g filter="url(#sh)"><rect x="60" y="432" width="222" height="125" rx="12" fill="url(#bat)"/>
+<rect x="110" y="422" width="34" height="14" rx="3" fill="#dc2626"/><rect x="196" y="422" width="34" height="14" rx="3" fill="#111827"/>
+<text x="171" y="485" text-anchor="middle" font-size="24" font-weight="bold" fill="#fff">LiFePO4</text>
+<text x="171" y="518" text-anchor="middle" font-size="19" fill="#dbeafe">12,8V 6Ah</text></g>
+
+<!-- Fuse -->
+<g filter="url(#sh)"><rect x="345" y="284" width="70" height="32" rx="14" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/><rect x="362" y="292" width="36" height="16" fill="#fde68a"/></g>
+<text x="380" y="272" text-anchor="middle" font-size="16" font-weight="bold" fill="#0f172a">Cầu chì 2A</text>
+<text x="1215" y="206" text-anchor="start" font-size="17" font-weight="bold" fill="#dc2626">BUS +12V</text>
+
+<!-- Buck -->
+<g filter="url(#sh)"><rect x="420" y="432" width="182" height="80" rx="6" fill="#1d4ed8"/><rect x="438" y="446" width="44" height="44" rx="4" fill="#111827"/>
+<circle cx="520" cy="468" r="18" fill="#0f172a"/><text x="520" y="474" text-anchor="middle" font-size="14" fill="#fff">330</text>
+<rect x="556" y="448" width="26" height="40" fill="#60a5fa"/></g>
+<text x="511" y="540" text-anchor="middle" font-size="16" font-weight="bold" fill="#0f172a">Hạ áp 12V→5V (MP1584)</text>
+<text x="482" y="425" font-size="14" fill="#334155">+ tụ 470µF</text>
+
+<!-- ESP32 -->
+<g filter="url(#sh)"><rect x="702" y="250" width="220" height="380" rx="10" fill="#111827"/>
+<rect x="715" y="300" width="100" height="90" rx="4" fill="#94a3b8"/><rect x="725" y="310" width="80" height="70" rx="2" fill="#cbd5e1"/>
+<text x="765" y="352" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a">ESP32</text>
+<rect x="787" y="595" width="50" height="30" rx="4" fill="#9ca3af"/>
+<g fill="#fbbf24">
+ <rect x="912" y="272" width="14" height="14"/><rect x="912" y="372" width="14" height="14"/><rect x="912" y="397" width="14" height="14"/><rect x="912" y="422" width="14" height="14"/><rect x="912" y="447" width="14" height="14"/><rect x="912" y="532" width="14" height="14"/><rect x="912" y="557" width="14" height="14"/>
+ <rect x="698" y="552" width="14" height="14"/><rect x="698" y="582" width="14" height="14"/><rect x="698" y="602" width="14" height="14"/></g>
+<g font-size="14" fill="#f8fafc" text-anchor="end">
+ <text x="906" y="285">SPI 5/18/19/23</text><text x="906" y="385">GPIO27</text><text x="906" y="410">GPIO4</text><text x="906" y="435">GPIO13</text><text x="906" y="460">GPIO16</text><text x="906" y="545">GPIO32</text><text x="906" y="570">GPIO33</text></g>
+<g font-size="14" fill="#f8fafc"><text x="718" y="565">VIN 5V</text><text x="718" y="595">GND</text><text x="718" y="615">GPIO25</text></g></g>
+<text x="812" y="240" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">ESP32 DevKit V1</text>
+
+<!-- LoRa -->
+<g filter="url(#sh)" transform="translate(0,-35)"><rect x="1012" y="80" width="190" height="140" rx="6" fill="#1e40af"/><rect x="1042" y="100" width="110" height="100" rx="4" fill="#d1d5db"/>
+<text x="1097" y="145" text-anchor="middle" font-size="18" font-weight="bold" fill="#111827">Ra-01H</text><text x="1097" y="170" text-anchor="middle" font-size="14" fill="#334155">SX1276</text>
+<rect x="1196" y="100" width="22" height="18" fill="#fbbf24"/><line x1="1218" y1="109" x2="1260" y2="109" stroke="#111827" stroke-width="4"/>
+<rect x="1256" y="30" width="14" height="90" rx="6" fill="#111827"/></g>
+<text x="1107" y="31" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a">LoRa 923 MHz + anten</text>
+
+<!-- ULN2003 -->
+<g filter="url(#sh)"><rect x="1028" y="352" width="204" height="140" rx="6" fill="#065f46"/><rect x="1080" y="385" width="100" height="62" rx="3" fill="#111827"/>
+<text x="1130" y="421" text-anchor="middle" font-size="16" font-weight="bold" fill="#f8fafc">ULN2003</text>
+<g font-size="13" fill="#d1fae5"><text x="1034" y="384">IN1</text><text x="1034" y="409">IN2</text><text x="1034" y="434">IN3</text><text x="1034" y="459">IN4</text>
+<text x="1226" y="384" text-anchor="end">OUT1</text><text x="1226" y="409" text-anchor="end">OUT2</text><text x="1226" y="434" text-anchor="end">OUT3</text><text x="1226" y="459" text-anchor="end">OUT4</text>
+<text x="1188" y="370">COM</text><text x="1104" y="485">GND</text></g></g>
+<text x="1140" y="515" text-anchor="middle" font-size="15" fill="#334155">kéo xuống GND để bật</text>
+
+<!-- Tower light -->
+<g filter="url(#sh)">
+ <rect x="1372" y="60" width="120" height="22" rx="8" fill="#334155"/>
+ <rect x="1380" y="82" width="104" height="100" fill="#ef4444"/><rect x="1380" y="182" width="104" height="100" fill="#facc15"/><rect x="1380" y="282" width="104" height="100" fill="#22c55e"/>
+ <rect x="1376" y="382" width="112" height="70" rx="4" fill="#1f2937"/><circle cx="1432" cy="417" r="22" fill="#0f172a" stroke="#64748b" stroke-width="3"/>
+ <g fill="#0f172a"><circle cx="1424" cy="410" r="3"/><circle cx="1440" cy="410" r="3"/><circle cx="1424" cy="424" r="3"/><circle cx="1440" cy="424" r="3"/></g>
+ <rect x="1412" y="452" width="40" height="150" fill="#94a3b8"/><rect x="1382" y="600" width="100" height="22" rx="4" fill="#334155"/></g>
+<g font-size="15" fill="#fff" font-weight="bold" text-anchor="middle"><text x="1432" y="137">ĐỎ</text><text x="1432" y="237" fill="#713f12">VÀNG</text><text x="1432" y="337">XANH</text></g>
+<text x="1432" y="645" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a">Đèn tháp 3 màu</text>
+<text x="1432" y="667" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a">có còi 12VDC</text>
+<text x="1432" y="689" text-anchor="middle" font-size="15" fill="#334155">chung dương, IP65</text>
+<text x="1368" y="536" text-anchor="end" font-size="14" fill="#475569">CÒI</text>
+<text x="1365" y="132" text-anchor="end" font-size="14" fill="#dc2626">CHUNG +12V</text>
+
+<!-- JSN-SR04T -->
+<g filter="url(#sh)"><rect x="1040" y="722" width="160" height="70" rx="6" fill="#1d4ed8"/><text x="1120" y="764" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">JSN-SR04T</text>
+<path d="M1200 757 C 1260 757, 1280 800, 1330 800" stroke="#111827" stroke-width="5" fill="none"/>
+<rect x="1330" y="778" width="70" height="44" rx="20" fill="#111827"/><circle cx="1400" cy="800" r="20" fill="#334155"/></g>
+<text x="1365" y="855" text-anchor="middle" font-size="15" fill="#334155">đầu dò chống nước, chĩa xuống mặt đường</text>
+<g><rect x="1004" y="660" width="40" height="14" rx="3" fill="#d6b48a" stroke="#78350f"/><text x="1050" y="672" font-size="13" fill="#78350f">ECHO: 1kΩ / 2kΩ chia áp 5V→3,3V</text></g>
+
+<!-- SOS button -->
+<g filter="url(#sh)"><rect x="705" y="722" width="110" height="60" rx="8" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/><circle cx="760" cy="752" r="24" fill="#dc2626"/><text x="760" y="758" text-anchor="middle" font-size="15" font-weight="bold" fill="#fff">SOS</text></g>
+<text x="830" y="760" font-size="15" fill="#334155">Nút IP67</text>
+
+<!-- Legend -->
+<g font-size="16" fill="#0f172a">
+ <rect x="40" y="650" width="560" height="200" rx="12" fill="#f8fafc" stroke="#cbd5e1"/>
+ <text x="60" y="680" font-weight="bold">Chú thích dây</text>
+ <line x1="60" y1="705" x2="110" y2="705" stroke="#dc2626" stroke-width="5"/><text x="120" y="711">+12V</text>
+ <line x1="220" y1="705" x2="270" y2="705" stroke="#f97316" stroke-width="5"/><text x="280" y="711">+5V</text>
+ <line x1="370" y1="705" x2="420" y2="705" stroke="#111827" stroke-width="5"/><text x="430" y="711">GND chung</text>
+ <line x1="60" y1="740" x2="110" y2="740" stroke="#2563eb" stroke-width="5"/><text x="120" y="746">Điều khiển đèn/còi</text>
+ <line x1="330" y1="740" x2="380" y2="740" stroke="#9333ea" stroke-width="5"/><text x="390" y="746">SPI LoRa</text>
+ <line x1="60" y1="775" x2="110" y2="775" stroke="#0891b2" stroke-width="5"/><text x="120" y="781">Cảm biến, nút SOS</text>
+ <text x="60" y="818" font-size="15" fill="#475569">Hộp IP65 · nút thông hơi · ốc siết cáp · sơn phủ mạch</text>
+</g>
+</svg></body></html>
