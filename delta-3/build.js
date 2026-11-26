@@ -16,6 +16,7 @@ pres.theme = { headFontFace: THEME.headFontFace, bodyFontFace: THEME.bodyFontFac
 pres.title = 'DELTA-3 – Phát hiện sớm, Chặn tận gốc, Cảnh báo kịp thời';
 const C = pres.SchemeColor;
 const IMG = 'img/';
+const OUT = process.argv[2] || 'DELTA-3_thuyet_trinh.pptx';
 const FOOT = 'DELTA-3  ·  Phát hiện sớm – Chặn tận gốc – Cảnh báo kịp thời';
 
 // ---------- layouts ----------
@@ -323,6 +324,24 @@ function chip(s, text, x, y, w, color) { s.addShape(pres.shapes.ROUNDED_RECTANGL
   T(s, bullets(['Linh kiện phổ biến, mua được trong nước (ESP32, LoRa, cảm biến)', 'Hố ga lắp vào hố có sẵn, không phải đào đường làm lại', 'Không điện, không mô-tơ nên gần như không tốn vận hành', 'Làm từng lớp: thành phố chọn lớp cần nhất cho từng điểm']), { x: 8.75, y: 2.05, w: 3.8, h: 3.3, fontSize: 14 });
   T(s, 'Số liệu ước tính, cần báo giá thật trước khi thi công.', { x: 8.75, y: 5.9, w: 3.8, h: 0.7, fontSize: 12, italic: true, color: '6B7F86' });
 
+  // ===== 20b. Feasibility =====
+  s = pres.addSlide({ masterName: 'CONTENT', sectionTitle: 'Sáng tạo – Giá thành – Áp dụng' });
+  s.addText('Tính khả thi: rủi ro nào cũng đã có cách xử lý', { placeholder: 'title' });
+  const rk = [['Mùa mưa nước đục, dễ báo động giả', 'Vũ lượng kế + AI phân loại theo lượng mưa, mực nước, TDS'],
+    ['Rác làm kẹt van chống triều', 'Lưới Coanda tự làm sạch lọc trước; van mỏ vịt không bản lề'],
+    ['Mưa vượt thiết kế gây ngập', 'Đường B tràn tự do ~100 L/s; tràn qua mép lưới về giỏ, không kém hố ga thường'],
+    ['Bão làm mất điện, mất sóng 4G', 'Pin LiFePO4 + tấm pin 10 W; LoRa không phụ thuộc mạng di động'],
+    ['Bảo trì tốn công', 'Module rút lên qua nắp gang, xô hố lắng nhấc ra, cảm biến báo giỏ đầy qua LoRa'],
+    ['Chi phí và thi công', 'Lắp vào hố ga có sẵn, không đào đường; làm dần từng lớp, từng điểm']];
+  s.addTable([[H('Rủi ro'), H('Cách DELTA-3 xử lý')], ...rk.map(r => [{ text: r[0], options: { bold: true } }, r[1]])],
+    { x: 0.6, y: 1.4, w: 7.9, colW: [3.0, 4.9], fontSize: 14, color: HEX.dk1, border: { type: 'solid', color: 'D5E2E5', pt: 1 }, rowH: 0.74, valign: 'middle' });
+  card(s, 8.8, 1.4, 3.9, 5.3, HEX.dk2);
+  T(s, 'Đã chứng minh được', { x: 9.05, y: 1.6, w: 3.4, h: 0.45, fontSize: 18, bold: true, color: HEX.accent2 });
+  T(s, bullets(['Trạm quan trắc đã lắp và chạy thử ngoài trời, truyền LoRa + MQTT lên App/Web', 'Toàn bộ nguyên lý hố ga là cơ khí đã được dùng trong ngành thoát nước: hiệu ứng Coanda, van một chiều, bình thông nhau, lắng trọng lực', 'Linh kiện mua được trong nước'], { color: 'FFFFFF' }),
+    { x: 9.05, y: 2.15, w: 3.4, h: 3.2, fontSize: 14, color: C.background1 });
+  T(s, 'Bước tiếp theo: làm mô hình hố ga tỉ lệ 1:5 và đo thật', { x: 9.05, y: 5.55, w: 3.4, h: 1.0, fontSize: 14, bold: true, color: HEX.accent5 });
+  s.addNotes('Giám khảo luôn hỏi: có làm được thật không. Trả lời bằng bảng rủi ro: mỗi rủi ro đều đã có cách xử lý cụ thể trong thiết kế.');
+
   // ===== 21. Da Nang =====
   s = pres.addSlide({ masterName: 'CONTENT', sectionTitle: 'Sáng tạo – Giá thành – Áp dụng' });
   s.addText('Áp dụng thực tế tại Đà Nẵng', { placeholder: 'title' });
@@ -368,7 +387,7 @@ function chip(s, text, x, y, w, color) { s.addShape(pres.shapes.ROUNDED_RECTANGL
     T(s, cc[i][1], { x: 8.45, y: y + 0.57, w: 4.1, h: 0.85, fontSize: 14, color: C.background1 }); }
   T(s, 'Xin cảm ơn Ban giám khảo!', { x: 0.7, y: 5.4, w: 7.2, h: 0.6, fontSize: 24, bold: true, color: HEX.accent2, fontFace: THEME.headFontFace });
 
-  await pres.writeFile({ fileName: 'DELTA-3_thuyet_trinh.pptx' });
-  await applyTheme('DELTA-3_thuyet_trinh.pptx', THEME);
+  await pres.writeFile({ fileName: OUT });
+  await applyTheme(OUT, THEME);
   console.log('done');
 })().catch(e => { console.error(e); process.exit(1); });
